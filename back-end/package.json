@@ -1,0 +1,19 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "application back-end du site hot-takes",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marie-lourdes/site-piiquante.git"
+  },
+  "author": "marie-lourdes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marie-lourdes/site-piiquante/issues"
+  },
+  "homepage": "https://github.com/marie-lourdes/site-piiquante#readme"
+}
