@@ -4,7 +4,7 @@
   "description": "application back-end du site hot-takes",
   "main": "server.js",
   "scripts": {
-    "server": "node server.js"
+    "server": "nodemon server.js"
   },
   "repository": {
     "type": "git",
