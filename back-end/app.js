@@ -9,7 +9,7 @@ const app = express();
 
 // ajout d un middleware integrée a express qui va recuperer toutes les requêtes entrante (objet request) dont le body est en content-type: application json
 // ce middleware ne doit etre placer dans le tunnel gestionnaire des middleware avec le chainage de next(), 
-// ce middleware traite et analyse  l'objet request des requete entrante en json avec la methode express.json()
+// ce middleware traite et analyse  l'objet request des requete entrante en json avec la methode express.json() et le transformer en objet javascript pour le rendre exploitable
 app.use(express.json());
 
 // .........................CONFIGURATION GENERALE DES HEADERS RESPONSE ET DE L'ACCES AUX RESSOURCES DE L API POUR TOUS  DE REQUETES DU FRONT END VERS L API..........................
@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    next();
+    next();// passe l execution du serveur au middleware suivant  qui traite l'envoie de l'objet reponse des requêtes sur tout type de verbe http
   });
 
 app.use( ( req, res )=>{
