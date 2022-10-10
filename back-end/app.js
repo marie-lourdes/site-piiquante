@@ -11,7 +11,7 @@ const app = express();
 // import du module mongoose
 const mongoose = require( "mongoose" );
 // creation de la connexion avec authentification de l'application  express avec la base de données MongoDB Atlas
-mongoose.connect('mongodb+srv://marie-lourdes:<1234>@cluster0.v4aphph.mongodb.net/?retryWrites=true&w=majority ',
+mongoose.connect("mongodb+srv://marie-lourdes:1234@cluster0.v4aphph.mongodb.net/?retryWrites=true&w=majority",
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
