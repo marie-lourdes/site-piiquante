@@ -17,7 +17,7 @@ const bcrypt = require( "bcrypt" );
             email: req.body.email, // recupération de l 'email crée et saisi dans le formulaire
             password: hash
         });
-    // enregistrement de la nouvelle instance de modèle "user" dans la base de données intégrant les données structurées avec les valeurs
+        // enregistrement de la nouvelle instance de modèle "user" dans la base de données intégrant les données structurées avec les valeurs
         user.save()
         .then( () => res.status( 201 ).json( { message: "compte utilisateur crée"}))//save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
         .catch( error => res.status( 400 ).json( {error} ) );// catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
