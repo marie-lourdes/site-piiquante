@@ -38,16 +38,18 @@ app.use( ( req, res, next ) => {
     next();// passe l execution du serveur au middleware suivant  qui traite l'envoie de l'objet reponse des requêtes sur tout type de verbe http
   });
 
-//............................................CREATION DE LA ROUTE DE BASE DES SAUCES ......................................
-app.use("/api/sauces", ( req, res ) => {
-  console.log( "requete bien recue" )
-  res.status( 200 ).send( "requête reçue" );
-});
+
 
 // ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
 
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
+
+//............................................CREATION DE LA ROUTE DE BASE DES SAUCES ......................................
+app.use( "/api/sauces", ( req, res ) => {
+  console.log( "requete bien recue" )
+  res.status( 200 ).send( "requête reçue" );
+});
 
 // exporte la valeur actuelle de l objet exports du module app.js pour le rendre accessible hors de ce module, notamment au fichier server.js, pour que le serveur node s execute avec express et les fonctionnalités de l application express
 module.exports = app;

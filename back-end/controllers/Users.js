@@ -17,10 +17,12 @@ const bcrypt = require( "bcrypt" );
             email: req.body.email, // recupération de l 'email crée et saisi dans le formulaire
             password: hash
         });
+       
         // enregistrement de la nouvelle instance de modèle "user" dans la base de données intégrant les données structurées avec les valeurs
         user.save()
-        .then( () => res.status( 201 ).json( { message: "compte utilisateur crée"}))//save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
+        .then( () => res.status( 201 ).json( { message: "compte utilisateur crée"} ) )//save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
         .catch( error => res.status( 400 ).json( {error} ) );// catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
+        console.log("prévalidation de l email unique enregistré dans la base de donnée uniquement si l'email est unique:",user)
     })
-    .catch( error => res.status( 500 ) ).json( { error } )// nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
+    .catch( error => res.status( 500 ).json( {error} ) );// nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
 };
