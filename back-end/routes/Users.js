@@ -4,9 +4,7 @@ const router = express.Router()
 
 //..................CRÉATION DES ROUTES POUR L INSCRIPTION D'UN UTILISATEUR ET LA CONNEXION D'UN UTILISATEUR DEJA INSCRIT.................
 
-router.post( "/signup", ( req, res ) => {
-
-});
+router.post( "/signup", );
 
 router.post( "/login", ( req, res ) => {
 
