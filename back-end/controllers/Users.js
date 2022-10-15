@@ -2,6 +2,13 @@
 const User = require("../models/Users" )
 // import du package bcrypt pour crypter le mot de passe crée de l utilisateur lors de son inscription dans la fonction controllers signup
 const bcrypt = require( "bcrypt" );
+//import du package jsonwebtoken pour crypter le token dans la reponse envoyé sur la route "/login"
+const jwt = require( "jsonwebtoken" );
+// import du package dotenv pour charger les variables d 'environnement crée dans le fichier .env
+const dotenv = require( "dotenv" );
+dotenv.config();
+// Sécurisation de l algorithme de cryptage du token separé du code de l application
+const TOKEN = process.env.TOKEN_REQUEST;
 
 //............................CREATION DES FONCTIONS SEMANTIQUES DU CONTROLLERS POUR L INSCRIPTION ET LA CONNEXION DE L UTILISATEUR.............................
 
@@ -49,12 +56,17 @@ exports.login = ( req, res ) => {
             // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
             // nous précisons pas que l 'erreur vient du mot de passe , qui ne correspond pas à l'utilisateur avec l'email indiqué dans la requête de l utilisateur et trouvé  dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
           }
-          // si le mot de passe est valid nous envoyons dans la reponse de la requête l'id de l utilisateur et un token pour les opération CRUD qu'il souhaite faire sur les ressources de l'api
+          // si le mot de passe est valid nous envoyons dans la reponse de la requête l'id de l utilisateur et un token crypté pour les opération CRUD qu'il souhaite faire sur les ressources de l'api
           res.status( 200 ).json( {
             userId: user._id,
-            token: "TOKEN"
+            token:jwt.sign( 
+              // on s 'assure de crypter avec sign() le token de l utilisateur avec l'id  de l utilisateur qui a été recherché et verifié avec l email et le mot entré par l'utilisateur via la requête Post du formaulaire de connexion
+              {userId: user._id },
+              TOKEN,
+              {expiresIn: "24h"}
+            )          
           } );  
-        })
+        } )
         .catch( error => res.status( 500 ).json( {error} ) );
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
     })
