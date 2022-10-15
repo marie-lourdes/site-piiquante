@@ -2,6 +2,9 @@
 
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
+ 
+// import du module router pour acceder aux routes individuelles 
+const routerUsers = require ( "./routes/Users" );
 
 //on execute l application express via sa methode express() accessible grace au module express importé
 const app = express();
@@ -35,10 +38,15 @@ app.use( ( req, res, next ) => {
     next();// passe l execution du serveur au middleware suivant  qui traite l'envoie de l'objet reponse des requêtes sur tout type de verbe http
   });
 
+// ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
+
 app.use( ( req, res )=>{
     console.log( "requete bien recue" )
     res.status( 200 ).send( "requête reçue" );
 });
+
+// création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
+app.use( "/api/auth", routerUsers )
 
 // exporte la valeur actuelle de l objet exports du module app.js pour le rendre accessible hors de ce module, notamment au fichier server.js, pour que le serveur node s execute avec express et les fonctionnalités de l application express
 module.exports = app;
