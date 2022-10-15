@@ -10,7 +10,7 @@ const router = express.Router();
 //création de la route individuelle "/signup" avec la methode du controller signup
 router.post( "/signup", userCtrler.signUp );
 
-router.post( "/login", );
+router.post( "/login", userCtrler.login );
 
 // on exporte l 'objet router pour le rendre accessible à l application dans le fichier app.js et ajouter les routes individuelles à la route de base de l application
 module.exports = router;

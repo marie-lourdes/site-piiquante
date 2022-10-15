@@ -1,8 +1,14 @@
+// import du package dotenv pour charger les variables d 'environnement crée dans le fichier .env
+const dotenv = require( "dotenv" );
+dotenv.config();
+
+// récupération de la variable d environnement pour la connexion à la base de donnée
+const DB = process.env.URI_DB;
 //..........................CREATION DE L APPLICATION EXPRESS......................
 
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
- 
+
 // import du module router pour acceder aux routes individuelles 
 const routerUsers = require ( "./routes/Users" );
 
@@ -13,12 +19,12 @@ const app = express();
 
 // import du module mongoose
 const mongoose = require( "mongoose" );
+
 // creation de la connexion avec authentification de l'application  express avec la base de données MongoDB Atlas
-mongoose.connect("mongodb+srv://marie-lourdes:1234@cluster0.v4aphph.mongodb.net/?retryWrites=true&w=majority",
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+// base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
+mongoose.connect(DB, {useNewUrlParser: true, useUnifiedTopology: true} )
+.then(() => console.log('Connexion à MongoDB réussie !' ) )
+.catch(() => console.log( 'Connexion à MongoDB échouée !' ) );
 
 //........................CONFIGURATION GENERALE DES REQUETES ENTRANTES ET DE L'OBJET REQUEST DONT LE BODY EST INDIQUÉ  AU FORMAT JSON DANS LE HEADER DE LA REQUETE...................
 
