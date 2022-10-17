@@ -9,6 +9,7 @@ const DB = process.env.URI_DB;
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
 
+//import du module auth pour authentifier et signer les requêtes  vers l API avec l id utilisateur
 const auth = require("./middlewares/auth");
 
 // import du module router pour acceder aux routes individuelles 
@@ -54,7 +55,7 @@ app.use( ( req, res, next ) => {
 app.use( "/api/auth", routerUsers );
 
 //............................................CREATION DE LA ROUTE DE BASE DES SAUCES ......................................
-app.use( "/api/sauces",auth, ( req, res ) => {
+app.use( "/api/sauces",auth , ( req, res ) => {
   console.log( "requete bien recue" )
   res.status( 200 ).send( "requête reçue" );
 });
