@@ -12,9 +12,6 @@ const express = require( "express" );
 // import du package path pour normaliser le chemin d'acces au dossier images du serveur back end
 const path = require( "path" );
 
-//import du module auth pour authentifier et signer les requêtes  vers l API avec l id utilisateur
-const auth = require("./middlewares/auth");
-
 // import du module router users  pour acceder aux routes individuelles  du parcours utlisateur
 const routerUsers = require( "./routes/Users" );
 
@@ -46,23 +43,30 @@ app.use( express.json() );
 
 // configuration generale CORS de la reponse retourné (objet response) suite à une requete du front end avec la modification de la securite d acces au ressource de CORS
 // en ajoutant des headers à l objet response pour tout type de requete et sur toutes les routes
-app.use( ( req, res, next ) => {
+function corsConfiguration (){
+  app.use( ( req, res, next ) => {
     res.setHeader( 'Access-Control-Allow-Origin', '*' );
     res.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization' );
     res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS' );
     next();// passe l execution du serveur au middleware suivant  qui traite l'envoie de l'objet reponse des requêtes sur tout type de verbe http
   });
 
+}
+
+corsConfiguration();
+
+
 // ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
 
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
 
+
 //creation de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traités de manière statique
 app.use("/images", express.static(path.join( __dirname, "images")));
 
 //création de la route de base pour les sauces
-app.use( "/api/sauces", auth, routerSauces);
+app.use( "/api/sauces",  routerSauces);
 
 /*app.use( "/api/sauces",auth ,( req, res ) => {
   console.log( "requete bien recue" )

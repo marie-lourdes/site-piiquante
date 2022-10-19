@@ -1,7 +1,9 @@
 // import de l application express pour acceder à la méthode router et crée l objet router
 const express = require( "express" );
+//import du module auth pour authentifier et signer les requêtes  vers l API avec l id utilisateur
+const auth = require("../middlewares/auth");
 //import du middleware multer
-const upload = require( "./middlewares/config-upload");
+const upload = require( "../middlewares/config-upload");
 // import du modèle de sauces pour les opérations CRUD sur chaque route indivuelle
 const Sauce = require("../models/Sauces");
 // creation de l 'objet router qui recevra les routes individuelles
@@ -10,7 +12,7 @@ const router = express.Router();
 //..............................CRÉATION DES ROUTES INDIVIDUELLES DE LA ROUTE DE BASE POUR LES SAUCES..............................
 
 // création de la route individuelle post dans l objet router et ajout du middleware upload qui gère le téléchargement des images par l u'ilisateur via le formulaire "add sauce"
-router.post("/", upload, ( req, res ) => {
+router.post("/", auth,upload, ( req, res ) => {
     // on récupère l objet body ajouté dans la requête par multer et transformé en chaine de caractère et on le reconstruis en mémoire en objet javascript avec JSON.parse
     const objtSauce = JSON.parse( req.body.sauce );
     // on supprime l id generé par le front- end car la base de donnée génère déja un id pour la sauce crée et enregistré dans la base de données
@@ -38,14 +40,22 @@ router.post("/", upload, ( req, res ) => {
         usersLiked: [],
         usersDisliked: []
 
-    } )
+    } );
 
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de Mongoose
     sauce.save()
-    .then( () => res.status( 201 ).json( {message: "Votre sauce a été ajoutée"} ) )
-    .catch(error => res.status( 400 ).json( {error} ));
+    .then( () => {
+        res.status( 201 ).json( {message: "Votre sauce a été ajoutée"} );
+    } )
+    .catch(error => {
+         res.status( 400 ).json( {error} ); 
+    } );
     // dans le bloc then nous récupérons la résultat de la promesse reussite  envoyé et modifions le status de la réponse à la requête avec le code de reussitte  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère et envoit l erreur coté client avec le code http 400  au front-end généré lors de l enregistrement des données crée par l'utilisateur
+});
+
+router.get("/", auth, (req, res) => {
+    res.status(200).send("requête recue")
 });
 
 // on exporte le module router pour le rendre accessible à l 'application dans app.js et ajouter les routes individuelles du module à la route de base dans app.js

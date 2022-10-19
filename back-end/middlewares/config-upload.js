@@ -22,9 +22,9 @@ const storage = multer.diskStorage( {
         // Récupération du nom d'origine du fichier que nous  scindons  en sous-chaine là ou il y a des espace , le transformons en tableau et nous retransformons les valeur des indices en une seule chaine de caratère en reliant les sous-chaines que sont les indices avec le separateur underscore pour former une seule chaine
         const name = file.originalname.split(" ").join("_");
         // création de l'extension: on recupere la propriété mimetype de l objet file de la requête et la valeur associée  dans le dictionnaire mimeType
-        const extension = mimeType[file.mimetype];
+        const extension = mimeTypes[file.mimetype];
         // En appelant la fonction callback nous nommons le fichier en ajoutant lors de l 'ajout de l 'image les millisecondes pour rendre unique le fichier si l on se retrouve avec des portants le nom d'origine
-        callback(null, name + Date.now() +"." + extension);
+        callback(null, name + Date.now() + "." + extension);
     }
 } );
 
