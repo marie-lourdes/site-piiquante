@@ -4,7 +4,7 @@ const mongoose = require( "mongoose" );
 //................................... CRÉATION DU MODELE DE DONNÉES  DES SAUCES.....................................
 
 // création de la structure de données de la sauce
-const saucesShema = mongoose.Schema( {
+const sauceShema = mongoose.Schema( {
     name: {type: String, required: true},
     manufacturer: {type: String, required: true},
     description: {type: String, required: true},
@@ -17,3 +17,7 @@ const saucesShema = mongoose.Schema( {
     usersLiked: [String],
     usersDisliked: [String]
 } );
+
+module.exports = mongoose.model( "Sauce", sauceShema);
+
+
