@@ -4,16 +4,22 @@ dotenv.config();
 
 // récupération de la variable d environnement pour la connexion à la base de donnée
 const DB = process.env.URI_DB;
-//..........................CREATION DE L APPLICATION EXPRESS......................
+//..........................CREATION DE L APPLICATION EXPRESS AVEC LES  MODULES ET PACKAGES NÉCESSAIRES A L'APPLICATION......................
 
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
 
+// import du package path pour normaliser le chemin d'acces au dossier images du serveur back end
+const path = require( "path" );
+
 //import du module auth pour authentifier et signer les requêtes  vers l API avec l id utilisateur
 const auth = require("./middlewares/auth");
 
-// import du module router pour acceder aux routes individuelles 
-const routerUsers = require ( "./routes/Users" );
+// import du module router users  pour acceder aux routes individuelles  du parcours utlisateur
+const routerUsers = require( "./routes/Users" );
+
+// import du module router sauces  pour acceder aux routes individuelles  du parcours des sauces
+const routerSauces = require( "./routes/Sauces" );
 
 //on execute l application express via sa methode express() accessible grace au module express importé
 const app = express();
@@ -52,12 +58,14 @@ app.use( ( req, res, next ) => {
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
 //creation de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traités de manière statique
-
+//app.use("/images", express.static(path.join( __dirname, "images")));
 //............................................CREATION DE LA ROUTE DE BASE DES SAUCES ......................................
-app.use( "/api/sauces",auth ,( req, res ) => {
+app.use( "/api/sauces", auth, routerSauces);
+
+/*app.use( "/api/sauces",auth ,( req, res ) => {
   console.log( "requete bien recue" )
   res.status( 200 ).send( "requête reçue" );
-});
+});*/
 
 // exporte la valeur actuelle de l objet exports du module app.js pour le rendre accessible hors de ce module, notamment au fichier server.js, pour que le serveur node s execute avec express et les fonctionnalités de l application express
 module.exports = app;
