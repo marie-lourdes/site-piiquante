@@ -9,7 +9,7 @@ const sauceShema = mongoose.Schema( {
     manufacturer: {type: String, required: true},
     description: {type: String, required: true},
     mainPepper: {type: String, required: true},
-    heat: {type: Number, min: 1, max: 10, required: true},
+    heat: {type: Number, min: 1, max: 10, required: true},// ajout d une contrainte pour la validation par mongoose de la valeur entre 1 et 10 du champs "heat"
     userId: {type: String, required: true},
     imageUrl: {type: String, required: true},
     likes: {type: Number},
