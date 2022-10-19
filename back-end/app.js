@@ -2,9 +2,6 @@
 const dotenv = require( "dotenv" );
 dotenv.config();
 
-//import du middleware multer
-const upload = require( "./middlewares/config-upload");
-
 // récupération de la variable d environnement pour la connexion à la base de donnée
 const DB = process.env.URI_DB;
 //..........................CREATION DE L APPLICATION EXPRESS......................
@@ -54,9 +51,10 @@ app.use( ( req, res, next ) => {
 
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
+//creation de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traités de manière statique
 
 //............................................CREATION DE LA ROUTE DE BASE DES SAUCES ......................................
-app.use( "/api/sauces",auth , upload, ( req, res ) => {
+app.use( "/api/sauces",auth ,( req, res ) => {
   console.log( "requete bien recue" )
   res.status( 200 ).send( "requête reçue" );
 });
