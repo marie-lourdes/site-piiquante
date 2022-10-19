@@ -25,9 +25,7 @@ const storage = multer.diskStorage( {
         const extension = mimeType[file.mimetype];
         // En appelant la fonction callback nous nommons le fichier en ajoutant lors de l 'ajout de l 'image les millisecondes pour rendre unique le fichier si l on se retrouve avec des portants le nom d'origine
         callback(null, name + Date.now() +"." + extension);
-
     }
-
 } );
 
 // export du middleware multer avec l'objet de configuration storage qui stocke la const storage pour le rendre accessible aux routes crées pour les sauces,
