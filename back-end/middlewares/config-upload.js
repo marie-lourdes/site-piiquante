@@ -1,9 +1,6 @@
 // import du module multer pour configurer la gestion de telechargement des images
 const multer = require( "multer" );
 
-//import du module path
-const path = require( "path" );
-
 //création d'un objet "dictionnaire" de la propriété mimetypes de l 'objet file avec une mimetype associée à leur valeur en extensions de fichier possibles des images qui seront ajoutés par l 'utilisateur dans le formulaire "add sauce"
 
 const mimeTypes = {
@@ -24,7 +21,6 @@ const storage = multer.diskStorage( {
     filename: ( req, file, callback ) => {
         // Récupération du nom d'origine du fichier sans l extension du nom d'origine du fichier lors du telechargement pour ne garder que le "nom dy fichier" et le reintegrer avec les extension du dictionnaire mimeTypes qu on restreint à 3 qu on accepte pour les images
         
-       console.log("extension path", path.extname(file.originalname));
        /* On transforme le nom d'origine du fichier en tableau , extrayons les valeur du tableau qui nous interesse: le nom du fichier sans l extension 
        et on retransforme en les sous chaine en une seul chaine de caractere*/
          let name= file.originalname.split(".").slice(0,-1).join();
