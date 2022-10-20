@@ -27,10 +27,10 @@ const storage = multer.diskStorage( {
        console.log("extension path", path.extname(file.originalname));
        /* On transforme le nom d'origine du fichier en tableau , extrayons les valeur du tableau qui nous interesse: le nom du fichier sans l extension 
        et on retransforme en les sous chaine en une seul chaine de caractere*/
-         let name= file.originalname.split(".").slice(0,-1).join("");
-         name = name.split(" ").join("_"); // de cette chaine de caractere nous la retranformons en tableau et la scindons au niveau des espaces et la relions en une seule chaine de caractere avec les underscores
-         /*const  name = fileName.split(" ")*/
+         let name= file.originalname.split(".").slice(0,-1).join();
+         name = name.split(" ").join("_");// de cette chaine de caractere nous la retranformons en tableau et la scindons au niveau des espaces et la relions en une seule chaine de caractere avec les underscores
          console.log("name", name)
+         // apres la modification du nom d origine du fichier sans l extension nous pouvons ajouté au nom d'origine stockée dans name ,les millisecondes, et  lui ajouté l extension
      
         // création de l'extension: on recupere la propriété mimetype de l objet file de la requête et la valeur associée  dans le dictionnaire mimeType
         const extension = mimeTypes[file.mimetype];

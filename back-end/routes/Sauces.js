@@ -11,7 +11,7 @@ const router = express.Router();
 
 //..............................CRÉATION DES ROUTES INDIVIDUELLES DE LA ROUTE DE BASE POUR LES SAUCES..............................
 
-// création de la route individuelle post dans l objet router et ajout du middleware upload qui gère le téléchargement des images par l u'ilisateur via le formulaire "add sauce"
+// création de la route individuelle POST dans l objet router et ajout des middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l u'ilisateur via le formulaire "add sauce"
 router.post("/", auth,upload, ( req, res ) => {
     // on récupère l objet body ajouté dans la requête par multer et transformé en chaine de caractère et on le reconstruis en mémoire en objet javascript avec JSON.parse
     const objtSauce = JSON.parse( req.body.sauce );
@@ -50,13 +50,19 @@ router.post("/", auth,upload, ( req, res ) => {
     .catch(error => {
          res.status( 400 ).json( {error} ); 
     } );
-    // dans le bloc then nous récupérons la résultat de la promesse reussite  envoyé et modifions le status de la réponse à la requête avec le code de reussitte  http 201 created que nous envoyons au front-end avec message en json
-    // catch recupère et envoit l erreur coté client avec le code http 400  au front-end généré lors de l enregistrement des données crée par l'utilisateur
+    // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
+    // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 });
 
-router.get("/", auth, (req, res) => {
-    res.status(200).send("requête recue")
+// création de la route individuelle GET dans l objet router et ajout des middleware auth qui gère l authentification des requêtes
+
+router.get("/", auth, ( req, res ) => {
+    Sauce.find()// va chercher tous les elements dans la collection de la base de données , nous luis avons pas donnée de query de comparaison en argument
+    .then(sauces => res.status( 200 ).json(sauce))// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
+    .catch( error => res.status( 400 ).json( {error}))// catch recupere l erreur generé sur la promesse envoyé par then  
 });
+
+
 
 // on exporte le module router pour le rendre accessible à l 'application dans app.js et ajouter les routes individuelles du module à la route de base dans app.js
 module.exports = router;
