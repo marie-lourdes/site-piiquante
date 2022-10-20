@@ -7,6 +7,8 @@ const upload = require( "../middlewares/config-upload");
 const { findOne } = require("../models/Sauces");
 // import du modèle de sauces pour les opérations CRUD sur chaque route indivuelle
 const Sauce = require("../models/Sauces");
+//import du module native de node appelé fs
+const fs = require( "fs" )
 // creation de l 'objet router qui recevra les routes individuelles
 const router = express.Router();
 
@@ -83,18 +85,32 @@ router.put( "/:id", auth, upload, ( req, res ) => {
             Celui qui a crée la sauce uniquement a le droit de modifier la sauce qu'il a crée et ajouté à l'application d'avis gastromique hot takes*/
             res.status( 403 ).json( {message: "requête non autorisée, vous n'êtes pas  propriétaire de cette sauce"} )
         }else{
-            // si l 'utilisatuer est bien le propriétaire de la sauce il peut modifier la sauce et nous tenons de sa requête de modification en modifiant sa sauce depuis la base de données
-            // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
-            Sauce.updateOne( {_id: req.params.id}, {...sauceObjt, _id: req.params.id} )
-            .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
-            .catch( error => res.status( 401 ).json({error}) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé
-
+            // si l 'utilisateur est bien le propriétaire de la sauce il peut modifier la sauce et nous tenons compte de sa requête de modification en modifiant sa sauce depuis la collection sauces de la base de données avec la methode mongoose updateOne()
+            function modifSauce(){
+                Sauce.updateOne( {_id: req.params.id}, {...sauceObjt, _id: req.params.id} )
+                .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
+                .catch( error => res.status( 401 ).json( {error} ) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé
+               
+            }
+            // mais d abord: dans le cas ou le fichier est aussi modifié, avant la modification de la sauce, nous recuperons le nom du fichier  dans lurl de l image de la sauce enregistré dans la base de donné pour le supprimé du dossier back-end avec le module fs qui gere les fichiers dans un programme node
+            //si seuls les champs textuelles du formulaire ont été modifiés, nous remplaçons l'ancien contenu par le nouveau  sans modifier l image de cette sauce stocké dans le dossier statique du serveur back-end "images"
+            if( req.file ){
+                const fileName = sauce.imageUrl.split( "/images/" )[1];
+                fs.unlink( `images/${fileName}`, ( err ) => { 
+                    if ( err ){
+                        throw err; 
+                    } 
+                    console.log( 'Image modifié !' );
+                    // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
+                    modifSauce();
+                });
+            }else if( !req.file ){
+                modifSauce();
+            }        
         }
-
     })
     .catch( error => res.status( 400 ).json( {error} ) ); 
     //catch va recuperer l erreur généré par la promesse envoyé du premier then et l 'envoyer dans la réponse modifié avec le status 400 erreur coté client
-
 });
 
 // création de la route individuelle GET (pour la page sauce : pour requeter une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
