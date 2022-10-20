@@ -1,6 +1,9 @@
 // import du module multer pour configurer la gestion de telechargement des images
 const multer = require( "multer" );
 
+//import du module path
+const path = require( "path" );
+
 //création d'un objet "dictionnaire" de la propriété mimetypes de l 'objet file avec une mimetype associée à leur valeur en extensions de fichier possibles des images qui seront ajoutés par l 'utilisateur dans le formulaire "add sauce"
 
 const mimeTypes = {
@@ -19,12 +22,19 @@ const storage = multer.diskStorage( {
     // multer creer de maniere aleatoire le nom du fichier et ne créer pas d'extension au fichier
     //Creation du nom du fichier avec la valeur de l'un des trois mimetypes du dictionnare mimeTypes
     filename: ( req, file, callback ) => {
-        // Récupération du nom d'origine du fichier que nous  scindons  en sous-chaine là ou il y a des espace , le transformons en tableau et nous retransformons les valeur des indices en une seule chaine de caratère en reliant les sous-chaines que sont les indices avec le separateur underscore pour former une seule chaine
-    
-        const name = file.fieldname.split(" ").join("_");
+        // Récupération du nom d'origine du fichier sans l extension du nom d'origine du fichier lors du telechargement pour ne garder que le "nom dy fichier" et le reintegrer avec les extension du dictionnaire mimeTypes qu on restreint à 3 qu on accepte pour les images
+        
+       console.log("extension path", path.extname(file.originalname));
+       /* On transforme le nom d'origine du fichier en tableau , extrayons les valeur du tableau qui nous interesse: le nom du fichier sans l extension 
+       et on retransforme en les sous chaine en une seul chaine de caractere*/
+         let name= file.originalname.split(".").slice(0,-1).join("");
+         name = name.split(" ").join("_"); // de cette chaine de caractere nous la retranformons en tableau et la scindons au niveau des espaces et la relions en une seule chaine de caractere avec les underscores
+         /*const  name = fileName.split(" ")*/
+         console.log("name", name)
+     
         // création de l'extension: on recupere la propriété mimetype de l objet file de la requête et la valeur associée  dans le dictionnaire mimeType
         const extension = mimeTypes[file.mimetype];
-        // En appelant la fonction callback nous nommons le fichier en ajoutant lors de l 'ajout de l 'image les millisecondes pour rendre unique le fichier si l on se retrouve avec des portants le nom d'origine
+        // creation du nom du fichier téléchargé avec les configuration ce dessus: en appelant la fonction callback nous nommons le fichier en ajoutant lors de l 'ajout de l 'image les millisecondes pour rendre unique le fichier si l on se retrouve avec des portants le nom d'origine
         callback(null, name + Date.now() + "." + extension);
     }
 } );
