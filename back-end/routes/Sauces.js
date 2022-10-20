@@ -12,7 +12,7 @@ const router = express.Router();
 
 //..............................CRÉATION DES ROUTES INDIVIDUELLES DE LA ROUTE DE BASE POUR LES SAUCES..............................
 
-// création de la route individuelle POST dans l objet router et ajout des middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l u'ilisateur via le formulaire "add sauce"
+// création de la route individuelle POST dans l objet router et ajout des middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l u'ilisateur via le formulaire de la page "new-sauce"
 router.post( "/", auth, upload, ( req, res ) => {
     // on récupère l objet body ajouté dans la requête par multer et transformé en chaine de caractère et on le reconstruis en mémoire en objet javascript avec JSON.parse
     const objtSauce = JSON.parse( req.body.sauce );
@@ -46,7 +46,7 @@ router.post( "/", auth, upload, ( req, res ) => {
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de Mongoose
     sauce.save()
     .then( () => {
-        res.status( 201 ).json( {message: "Votre sauce a été ajoutée"} );
+        res.status( 201 ).json( {message: "Votre sauce a bien été ajoutée"} );
     } )
     .catch( error => {
          res.status( 400 ).json( {error} ); 
@@ -54,6 +54,18 @@ router.post( "/", auth, upload, ( req, res ) => {
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 } );
+
+// création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gère l authentification des requêtes et le téléchargement des images par l u'ilisateur via le formulaire de la page "modify-sauce"
+router.put( "/:id", auth, upload, ( req, res ) => {
+    // vérification de l objet body envoyé sous forme de clé valeur du constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file
+    const sauceObjt = 
+        req.file ? { ...JSON.parse(req.body.sauce), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
+        : {...req.body};
+     
+   
+
+
+});
 
 // création de la route individuelle GET (pour la page sauce : pour requeter une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 
@@ -64,8 +76,8 @@ router.get("/:id", auth, ( req, res ) => {
     .catch( error => res.status(404).json({error}));// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
 
 } );
-// création de la route individuelle GET (pour la page all sauce)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 
+// création de la route individuelle GET (pour la page all sauce)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 router.get( "/", auth, ( req, res ) => {
     Sauce.find()// va chercher tous les elements dans la collection de la base de données , nous luis avons pas donnée de query de comparaison en argument
     .then(sauces => res.status( 200 ).json( sauces ) )// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
