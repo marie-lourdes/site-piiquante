@@ -55,14 +55,24 @@ router.post( "/", auth, upload, ( req, res ) => {
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 } );
 
-// création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gère l authentification des requêtes et le téléchargement des images par l u'ilisateur via le formulaire de la page "modify-sauce"
+// création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gère l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
 router.put( "/:id", auth, upload, ( req, res ) => {
-    // vérification de l objet body envoyé sous forme de clé valeur du constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file
+    /* vérification de l objet body envoyé 
+    - si il est sous forme de clé valeur par le constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file(pour le fichier)
+    - si il est sous forme d'objet json sans fichier donc pas sous la forme form-data et donc non modifié par le middleware upload (multer)*/
     const sauceObjt = 
-        req.file ? { ...JSON.parse(req.body.sauce), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
+        req.file ? { ...JSON.parse( req.body.sauce ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
         : {...req.body};
-     
-   
+    /* par securité nous supprimons l userId ajouté dans la requête par l utilisateur 
+    et recupererons l userId que nous avons ajouté à la requête lors de l 'authentification de l utilisateur du middleware auth
+    cela nous permettra de comparer l userId ajouté à la requête de modification ( dans le middleware auth) à l userId qui à été enregistré lors de la requête de la creation de la sauce */ 
+    delete sauceObjt._userId; 
+
+    // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete PUT front-end pour afficher la sauce modifié dans le DOM 
+    //nous comparons l userId du requerant et l userId enregistré dans la ressource sauce de la collection sauces
+    
+    
+
 
 
 });
@@ -71,6 +81,7 @@ router.put( "/:id", auth, upload, ( req, res ) => {
 
 //nous ajoutons un endpoint avec l element id rendu accessible de manière dynamique en tant que parametre de recherche dans la requête grace au ":"
 router.get("/:id", auth, ( req, res ) => {
+    // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete GET front-end pour afficher dans le DOM la sauce
     Sauce.findOne( {_id: req.params.id})// nous associons l element id de l endpoint à la requête qui recupere la valeur du parametre de recherche de la requête du front end avec le même element id de l'endpoint
     .then(sauce => res.status(200).json(sauce))//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoose findOne() 
     .catch( error => res.status(404).json({error}));// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
