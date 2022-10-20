@@ -63,17 +63,37 @@ router.put( "/:id", auth, upload, ( req, res ) => {
     const sauceObjt = 
         req.file ? { ...JSON.parse( req.body.sauce ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
         : {...req.body};
+
     /* par securité nous supprimons l userId ajouté dans la requête par l utilisateur 
     et recupererons l userId que nous avons ajouté à la requête lors de l 'authentification de l utilisateur du middleware auth
     cela nous permettra de comparer l userId ajouté à la requête de modification ( dans le middleware auth) à l userId qui à été enregistré lors de la requête de la creation de la sauce */ 
-    delete sauceObjt._userId; 
-
+    delete sauceObjt.userId; 
+    
     // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete PUT front-end pour afficher la sauce modifié dans le DOM 
     //nous comparons l userId du requerant et l userId enregistré dans la ressource sauce de la collection sauces
-    
-    
+    Sauce.findOne( {_id: req.params.id} )
+    .then( sauce => {
+        /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then
+         que la sauce avec l'id du parametre de recherche enregistré dans la base de donnée comporte le même userId (utlisateur) que le userId qui fait la requête de modification
+         en recupérant le userId que nous avons ajouté à la requête lors de la verification du token dans le middleware auth*/
+        if( sauce.userId != req.auth.userId ){
+            /* dans le cas ou l utilisateur qui veut modifier la sauce ne correspond a celui qui est enregistré avec la sauce, 
+            cela veut dire qu il ne l'a pas crée et qu il n en est pas propriétaire
+            On envoie dans la reponse à la requête de modification un code http 403 avec le message de requête non autorisée
+            Celui qui a crée la sauce uniquement a le droit de modifier la sauce qu'il a crée et ajouté à l'application d'avis gastromique hot takes*/
+            res.status( 403 ).json( {message: "requête non autorisée, vous n'êtes pas  propriétaire de cette sauce"} )
+        }else{
+            // si l 'utilisatuer est bien le propriétaire de la sauce il peut modifier la sauce et nous tenons de sa requête de modification en modifiant sa sauce depuis la base de données
+            // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
+            Sauce.updateOne( {_id: req.params.id}, {...sauceObjt, _id: req.params.id} )
+            .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
+            .catch( error => res.status( 401 ).json({error}) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé
 
+        }
 
+    })
+    .catch( error => res.status( 400 ).json( {error} ) ); 
+    //catch va recuperer l erreur généré par la promesse envoyé du premier then et l 'envoyer dans la réponse modifié avec le status 400 erreur coté client
 
 });
 
