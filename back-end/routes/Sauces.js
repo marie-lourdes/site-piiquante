@@ -87,24 +87,28 @@ router.put( "/:id", auth, upload, ( req, res ) => {
         }else{
             // si l 'utilisateur est bien le propriétaire de la sauce il peut modifier la sauce et nous tenons compte de sa requête de modification en modifiant sa sauce depuis la collection sauces de la base de données avec la methode mongoose updateOne()
             function modifSauce(){
+                  // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
                 Sauce.updateOne( {_id: req.params.id}, {...sauceObjt, _id: req.params.id} )
                 .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
                 .catch( error => res.status( 401 ).json( {error} ) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé
                
             }
             // mais d abord: dans le cas ou le fichier est aussi modifié, avant la modification de la sauce, nous recuperons le nom du fichier  dans lurl de l image de la sauce enregistré dans la base de donné pour le supprimé du dossier back-end avec le module fs qui gere les fichiers dans un programme node
-            //si seuls les champs textuelles du formulaire ont été modifiés, nous remplaçons l'ancien contenu par le nouveau  sans modifier l image de cette sauce stocké dans le dossier statique du serveur back-end "images"
+            // si le champs de type file , que la requete comporte un objet file ajouter par le gestionnaire de telechargemnt des images (le middleware upload avec le package multer), nous supprimons d abord l image dans le dossier statique avec le module Fs et la methode unlink()
+            //puis nous modifions la sauce et l imageUrl qui va requeter sur le dossier staique images du back-end dans le src de l image dans le front end
             if( req.file ){
                 const fileName = sauce.imageUrl.split( "/images/" )[1];
-                fs.unlink( `images/${fileName}`, ( err ) => { 
+                // la methode fs.unlink() du module fs gere les fichiers dans un programme node ici il supprime le fichier que nous avons recuperons dans l imageUrl enregistré dans la sauce à modifié dans la base de donnée 
+                fs.unlink( `images/${fileName}`, ( err ) => { //le call back recupere les erreurs et arrete la fonction unlink(),et le programme qui suit (dans le cas ou il n y a pas de catch)si il y a une erreur avec le mot clé throw
                     if ( err ){
                         throw err; 
                     } 
                     console.log( 'Image modifié !' );
-                    // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
+                  
                     modifSauce();
                 });
             }else if( !req.file ){
+                            //si seuls les champs textuelles du formulaire ont été modifiés, nous remplaçons l'ancien contenu par le nouveau  sans modifier l image de cette sauce stocké dans le dossier statique du serveur back-end "images"
                 modifSauce();
             }        
         }
