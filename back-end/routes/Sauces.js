@@ -57,6 +57,11 @@ router.post( "/", auth, upload, ( req, res ) => {
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 } );
 
+// ***création de la route individuelle POST (pour la page sauce : pour requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
+router.post("/:id/like", auth, (req, res) => {
+
+});
+
 // ***création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
 router.put( "/:id", auth, upload, ( req, res ) => {
     /* vérification de l objet body envoyé 
@@ -118,7 +123,7 @@ router.put( "/:id", auth, upload, ( req, res ) => {
 });
 
 // ***création de la route individuelle DELETE (pour la page sauce : pour requeter avec la methode http DELETE une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes  
-router.delete("/:id", auth, (req, res) => {
+router.delete( "/:id", auth, ( req, res ) => {
     Sauce.findOne( {_id: req.params.id} )
     .then( sauce => {
         /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then
@@ -139,32 +144,29 @@ router.delete("/:id", auth, (req, res) => {
                 } 
                 console.log( 'sauce supprimée' );
                  // on supprime la sauce en precisant l id de la sauce en premier argument  de la requête de modification, l'_id de la sauce qui est celui du parametre pour s assurer de supprimer celle de la page sauce où il se trouve
-                Sauce.deleteOne( {_id: req.params.id})
+                Sauce.deleteOne( {_id: req.params.id} )
                 .then( () => res.status( 200 ).json( {message: "la sauce a bien été supprimée"} ) )// envoie du code http 200 de la requête reussie
-                .catch( error => res.status( 401 ).json( {error} ) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé
-                      
-            });   
-             
+                .catch( error => res.status( 401 ).json( {error} ) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé         
+            });            
         }     
     })
-    .catch( error=> res.status(500).json({error}));// on recupere les erreurs genéré par la promesse du premier then et on envoie un erreur coté serveur, si la suppression ne se fait du à un pb avec la base de donnée ou du serveur en lui même
+    .catch( error => res.status( 500 ).json( {error} ) );// on recupere les erreurs genéré par la promesse du premier then et on envoie un erreur coté serveur, si la suppression ne se fait du à un pb avec la base de donnée ou du serveur en lui même
 });
 
 // ***création de la route individuelle GET (pour la page sauce : pour requeter une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 
 //nous ajoutons un endpoint avec l element id rendu accessible de manière dynamique en tant que parametre de recherche dans la requête grace au ":"
-router.get("/:id", auth, ( req, res ) => {
+router.get( "/:id", auth, ( req, res ) => {
     // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete GET front-end pour afficher dans le DOM la sauce
     Sauce.findOne( {_id: req.params.id})// nous associons l element id de l endpoint à la requête qui recupere la valeur du parametre de recherche de la requête du front end avec le même element id de l'endpoint
-    .then(sauce => res.status(200).json(sauce))//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoose findOne() 
-    .catch( error => res.status(404).json({error}));// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
-
+    .then(sauce => res.status( 200 ).json( sauce ) )//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoose findOne() 
+    .catch( error => res.status( 404 ).json( {error} ) );// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
 } );
 
 // ***création de la route individuelle GET (pour la page all sauce)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 router.get( "/", auth, ( req, res ) => {
     Sauce.find()// va chercher tous les elements dans la collection de la base de données , nous luis avons pas donnée de query de comparaison en argument
-    .then(sauces => res.status( 200 ).json( sauces ) )// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
+    .then( sauces => res.status( 200 ).json( sauces ) )// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
     .catch( error => res.status( 400 ).json( {error} ) );// catch recupere l erreur generé sur la promesse envoyé par then  
 } );
 
