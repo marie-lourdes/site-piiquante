@@ -66,10 +66,17 @@ router.post("/:id/like", auth, ( req, res ) => {
      
          sauce = new Sauce({
             
-           
+            name: sauce.name,
+            manufacturer: sauce.manufacturer,
+            description:sauce.dsecription,
+            mainPepper: sauce.mainPepper,
+            heat: sauce.heat,
+            imageUrl: sauce.imageUrl,
+
+
             userId: req.auth.userId,
             likes: req.body.like,
-            disLikes: req.body.like,
+            dislikes: req.body.like,
             usersLiked: [req.auth.userId]
     
         });
