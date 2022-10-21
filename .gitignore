@@ -2,7 +2,7 @@
 # Env
 .env
 # Dossier images
-./images
+/images
 # Compiled output
 /dist
 /tmp
