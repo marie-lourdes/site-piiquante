@@ -14,7 +14,7 @@ const router = express.Router();
 
 //..............................CRÉATION DES ROUTES INDIVIDUELLES DE LA ROUTE DE BASE POUR LES SAUCES..............................
 
-// création de la route individuelle POST dans l objet router et ajout des middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l u'ilisateur via le formulaire de la page "new-sauce"
+// ***création de la route individuelle POST dans l objet router et ajout des middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l u'ilisateur via le formulaire de la page "new-sauce"
 router.post( "/", auth, upload, ( req, res ) => {
     // on récupère l objet body ajouté dans la requête par multer et transformé en chaine de caractère et on le reconstruis en mémoire en objet javascript avec JSON.parse
     const objtSauce = JSON.parse( req.body.sauce );
@@ -57,7 +57,7 @@ router.post( "/", auth, upload, ( req, res ) => {
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 } );
 
-// création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gère l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
+// ***création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
 router.put( "/:id", auth, upload, ( req, res ) => {
     /* vérification de l objet body envoyé 
     - si il est sous forme de clé valeur par le constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file(pour le fichier)
@@ -113,11 +113,44 @@ router.put( "/:id", auth, upload, ( req, res ) => {
             }        
         }
     })
-    .catch( error => res.status( 400 ).json( {error} ) ); 
-    //catch va recuperer l erreur généré par la promesse envoyé du premier then et l 'envoyer dans la réponse modifié avec le status 400 erreur coté client
+    .catch( error => res.status( 500 ).json( {error} ) ); 
+    //catch va recuperer l erreur généré par la promesse envoyé du premier then et l 'envoyer dans la réponse modifié avec le status 500 erreur serveur
 });
 
-// création de la route individuelle GET (pour la page sauce : pour requeter une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
+// ***création de la route individuelle DELETE (pour la page sauce : pour requeter avec la methode http DELETE une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes  
+router.delete("/:id", auth, (req, res) => {
+    Sauce.findOne( {_id: req.params.id} )
+    .then( sauce => {
+        /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then
+         que la sauce avec l'id du parametre de recherche enregistré dans la base de donnée comporte le même userId (utlisateur) que le userId qui fait la requête de modification
+         en recupérant le userId que nous avons ajouté à la requête lors de la verification du token dans le middleware auth*/
+        if( sauce.userId != req.auth.userId ){
+            /* dans le cas ou l utilisateur qui veut supprimer la sauce ne correspond a celui qui est enregistré avec la sauce, 
+            cela veut dire qu il ne l'a pas crée et qu il n en est pas propriétaire
+            On envoie dans la reponse à la requête de suppression un code http 403 avec le message de requête non autorisée
+            Celui qui a crée la sauce uniquement a le droit de supprimer la sauce qu'il a crée et ajouté à l'application d'avis gastromique hot takes*/
+            res.status( 403 ).json( {message: "requête non autorisée, vous n'êtes pas  propriétaire de cette sauce"} )
+        }else{
+            const fileName = sauce.imageUrl.split( "/images/" )[1];
+            // la methode fs.unlink() du module fs gere les fichiers dans un programme node ici il supprime le fichier que nous avons recuperons dans l imageUrl enregistré dans la sauce à modifié dans la base de donnée 
+            fs.unlink( `images/${fileName}`, ( err ) => { //le call back recupere les erreurs et arrete la fonction unlink(),et le programme qui suit (dans le cas ou il n y a pas de catch)si il y a une erreur avec le mot clé throw
+                if ( err ){
+                    throw err; 
+                } 
+                console.log( 'sauce supprimée' );
+                 // on supprime la sauce en precisant l id de la sauce en premier argument  de la requête de modification, l'_id de la sauce qui est celui du parametre pour s assurer de supprimer celle de la page sauce où il se trouve
+                Sauce.deleteOne( {_id: req.params.id})
+                .then( () => res.status( 200 ).json( {message: "la sauce a bien été supprimée"} ) )// envoie du code http 200 de la requête reussie
+                .catch( error => res.status( 401 ).json( {error} ) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé
+                      
+            });   
+             
+        }     
+    })
+    .catch( error=> res.status(500).json({error}));// on recupere les erreurs genéré par la promesse du premier then et on envoie un erreur coté serveur, si la suppression ne se fait du à un pb avec la base de donnée ou du serveur en lui même
+});
+
+// ***création de la route individuelle GET (pour la page sauce : pour requeter une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 
 //nous ajoutons un endpoint avec l element id rendu accessible de manière dynamique en tant que parametre de recherche dans la requête grace au ":"
 router.get("/:id", auth, ( req, res ) => {
@@ -128,7 +161,7 @@ router.get("/:id", auth, ( req, res ) => {
 
 } );
 
-// création de la route individuelle GET (pour la page all sauce)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
+// ***création de la route individuelle GET (pour la page all sauce)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 router.get( "/", auth, ( req, res ) => {
     Sauce.find()// va chercher tous les elements dans la collection de la base de données , nous luis avons pas donnée de query de comparaison en argument
     .then(sauces => res.status( 200 ).json( sauces ) )// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
