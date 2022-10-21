@@ -68,7 +68,7 @@ router.post("/:id/like", auth, ( req, res ) => {
             
             name: sauce.name,
             manufacturer: sauce.manufacturer,
-            description:sauce.dsecription,
+            description:sauce.description,
             mainPepper: sauce.mainPepper,
             heat: sauce.heat,
             imageUrl: sauce.imageUrl,
