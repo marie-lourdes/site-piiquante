@@ -59,6 +59,7 @@ router.post( "/", auth, upload, ( req, res ) => {
 
 // ***création de la route individuelle POST (pour la page sauce : pour requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
 router.post("/:id/like", auth, (req, res) => {
+    res.status(201).send(" liké")
 
 });
 
