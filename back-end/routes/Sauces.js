@@ -58,8 +58,30 @@ router.post( "/", auth, upload, ( req, res ) => {
 } );
 
 // ***création de la route individuelle POST (pour la page sauce : pour requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
-router.post("/:id/like", auth, (req, res) => {
-    res.status(201).send(" liké")
+router.post("/:id/like", auth, ( req, res ) => {
+    delete  req.body.userId;
+    delete req.body._id;
+    Sauce.findOne( {_id: req.params.id} )
+    .then( sauce => {
+     
+         sauce = new Sauce({
+            
+           
+            userId: req.auth.userId,
+            likes: req.body.like,
+            disLikes: req.body.like,
+            usersLiked: [req.auth.userId]
+    
+        });
+   
+        sauce.save()
+        .then(() =>{
+            res.status(201).json({message:" sauce liké"})
+        })
+        .catch(error => res.status(400).json({error}))
+        console.log("sauceLike",sauce)
+    })
+    .catch(error => res.status( 500 ).json({error}))
 
 });
 
