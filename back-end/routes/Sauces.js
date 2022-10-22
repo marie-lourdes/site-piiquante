@@ -61,31 +61,60 @@ router.post( "/", auth, upload, ( req, res ) => {
 router.post("/:id/like", auth, ( req, res ) => {
 //par sécurité on supprime l userId ajouté par le requérant qui like et on ajoute dans le tableau usersLiked le userId ajouté à la requête signé (propriété auth de la requête req.auth) dans le middleware auth.js
     delete  req.body.userId;
+   
     Sauce.findOne( {_id: req.params.id} )
     .then( sauce => {
-        if( !sauce.usersLiked.includes( req.auth.userId ) && req.body.like === 1){
-            //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
-            Sauce.updateOne( {_id: req.params.id}),
-            {
-            //avec l opérateur de mise à jour $inc:on incremente de 1 le champs likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
-                $inc: {likes:1},
-            //avec l operateur de mise jour $push: on ajoute au champs usersLiked qui est un tableau la valeur de l userId du requérant
-                $push: {usersLiked: req.auth.userId}   
-            }
-            .then(() =>{
-                res.status(201).json({message:" sauce liké"})
-            })
-            .catch(error => res.status(400).json({error}))
-            console.log("sauceLike",sauce)
-
+ 
+        //Avant de modifier le tableau userLiked et la valeur de likes de la sauce, nous verifions que l utilisateurs requerant n est pas deja dans le tableau usersLiked de cette sauce avant de l y inscrire et enregistrer son vote
+        //cela permettra à l utilisateur de liker que si il n est pas  dans le tableau et qu il n a pas encore liker avec dans le corps de la requete like:1
+        if( ! sauce.usersLiked.includes( req.auth.userId ) && req.body.like === 1){
+           liker();  
+        }else if( ! sauce.usersDisliked.includes( req.auth.userId ) && req.body.like === -1){
+           disliker();    
         }
-     
+
+        function liker(){
+            //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
+            Sauce.updateOne( {_id: req.params.id}, {
+                //avec l opérateur de mise à jour $inc:on incremente de 1 le champs likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
+                $inc: {likes: 1},
+                //avec l operateur de mise jour $push: on ajoute au champs usersLiked qui est un tableau la valeur de l userId du requérant
+                $push: {usersLiked: req.auth.userId}  
+            })
+            .then((sauce) => {
+                res.status(201).json({message:" sauce liké"});
+                console.log("sauce liké", sauce);
+            })
+            .catch(error => res.status(400).json({error}));
+           
+           
+       }
+       function disliker(){
+           Sauce.updateOne( {_id: req.params.id}, {
+                /*//avec l operateur de mise jour $push: on retire au champs usersLiked qui est un tableau la valeur de l userId du requérant
+                $pull: {usersLiked: req.auth.userId}, */
+   
+                //avec l opérateur de mise à jour $inc:on desincremente de 1 le champs likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
+                $inc: {dislikes: 1},
+            
+                //avec l operateur de mise jour $pull: on ajoute au champs usersdisLiked qui est un tableau la valeur de l userId du requérant
+                $push: {usersDisliked: req.auth.userId} 
+            })
+            .then((sauce) => {
+                res.status(201).json({message:" sauce disliké"});
+                console.log("sauce disliké", sauce);
+            })
+            .catch(error => res.status(400).json({error}));
+            
+            
+       }
+      
    
       
       
         
     })
-    .catch(error => res.status( 500 ).json({error}));
+    .catch(error => res.status( 500 ).json({error}));// ou 404?
    
 
 });
@@ -123,7 +152,7 @@ router.put( "/:id", auth, upload, ( req, res ) => {
                   // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
                 Sauce.updateOne( {_id: req.params.id}, {...sauceObjt, _id: req.params.id} )
                 .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
-                .catch( error => res.status( 401 ).json( {error} ) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé
+                .catch( error => res.status( 400 ).json( {error} ) );// envoie du code htpp 400 qui signale une erreur coté client
                
             }
             // mais d abord: dans le cas ou le fichier est aussi modifié, avant la modification de la sauce, nous recuperons le nom du fichier  dans lurl de l image de la sauce enregistré dans la base de donné pour le supprimé du dossier back-end avec le module fs qui gere les fichiers dans un programme node
@@ -174,7 +203,7 @@ router.delete( "/:id", auth, ( req, res ) => {
                  // on supprime la sauce en precisant l id de la sauce en premier argument  de la requête de modification, l'_id de la sauce qui est celui du parametre pour s assurer de supprimer celle de la page sauce où il se trouve
                 Sauce.deleteOne( {_id: req.params.id} )
                 .then( () => res.status( 200 ).json( {message: "la sauce a bien été supprimée"} ) )// envoie du code http 200 de la requête reussie
-                .catch( error => res.status( 401 ).json( {error} ) );// envoie du code htpp 401 qui signale que l 'acces est non autorisé         
+                .catch( error => res.status( 400 ).json( {error} ) );// envoie du code htpp 400 qui signale une erreur coté client       
             });            
         }     
     })
