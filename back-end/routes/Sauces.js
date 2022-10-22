@@ -45,7 +45,7 @@ router.post( "/", auth, upload, ( req, res ) => {
     } );
 
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de MongoDB
-    sauce.insertOne()
+    sauce.save()
     .then( () => {
         res.status( 201 ).json( {message: "Votre sauce a bien été ajoutée"} );
     } )
@@ -58,42 +58,37 @@ router.post( "/", auth, upload, ( req, res ) => {
 } );
 
 // ***création de la route individuelle POST (pour la page sauce : pour requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
-/*router.post("/:id/like", auth, ( req, res ) => {
+router.post("/:id/like", auth, ( req, res ) => {
+//par sécurité on supprime l userId ajouté par le requérant qui like et on ajoute dans le tableau usersLiked le userId ajouté à la requête signé (propriété auth de la requête req.auth) dans le middleware auth.js
     delete  req.body.userId;
-    delete req.body._id;
     Sauce.findOne( {_id: req.params.id} )
     .then( sauce => {
+        if( !sauce.usersLiked.includes( req.auth.userId ) && req.body.like === 1){
+            //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
+            Sauce.updateOne( {_id: req.params.id}),
+            {
+            //avec l opérateur de mise à jour $inc:on incremente de 1 le champs likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
+                $inc: {likes:1},
+            //avec l operateur de mise jour $push: on ajoute au champs usersLiked qui est un tableau la valeur de l userId du requérant
+                $push: {usersLiked: req.auth.userId}   
+            }
+            .then(() =>{
+                res.status(201).json({message:" sauce liké"})
+            })
+            .catch(error => res.status(400).json({error}))
+            console.log("sauceLike",sauce)
+
+        }
      
-         sauce = new Sauce({
-            
-            name: sauce.name,
-            manufacturer: sauce.manufacturer,
-            description:sauce.description,
-            mainPepper: sauce.mainPepper,
-            heat: sauce.heat,
-            imageUrl: sauce.imageUrl,
-
-
-            userId: req.auth.userId,
-            likes: req.body.like,
-            dislikes: req.body.like,
-            usersLiked: [req.auth.userId]
-    
-        });
    
-        sauce.save()
-        .then(() =>{
-            res.status(201).json({message:" sauce liké"})
-        })
-        .catch(error => res.status(400).json({error}))
-        console.log("sauceLike",sauce)
+      
       
         
     })
     .catch(error => res.status( 500 ).json({error}));
    
 
-});*/
+});
 
 // ***création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
 router.put( "/:id", auth, upload, ( req, res ) => {
