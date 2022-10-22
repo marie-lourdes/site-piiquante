@@ -4,8 +4,7 @@ const express = require( "express" );
 const auth = require("../middlewares/auth");
 //import du middleware multer
 const upload = require( "../middlewares/config-upload");
-const { findOne } = require("../models/Sauces");
-// import du modèle de sauces pour les opérations CRUD sur chaque route indivuelle
+// import du modèle de sauces mongoose pour les opérations CRUD avec les methodes de mongoDB sur chaque route indivuelle
 const Sauce = require("../models/Sauces");
 //import du module native de node appelé fs
 const fs = require( "fs" )
@@ -45,20 +44,21 @@ router.post( "/", auth, upload, ( req, res ) => {
 
     } );
 
-    // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de Mongoose
-    sauce.save()
+    // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de MongoDB
+    sauce.insertOne()
     .then( () => {
         res.status( 201 ).json( {message: "Votre sauce a bien été ajoutée"} );
     } )
     .catch( error => {
          res.status( 400 ).json( {error} ); 
     } );
+    console.log("sauce ajouté", sauce)
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 } );
 
 // ***création de la route individuelle POST (pour la page sauce : pour requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
-router.post("/:id/like", auth, ( req, res ) => {
+/*router.post("/:id/like", auth, ( req, res ) => {
     delete  req.body.userId;
     delete req.body._id;
     Sauce.findOne( {_id: req.params.id} )
@@ -87,10 +87,13 @@ router.post("/:id/like", auth, ( req, res ) => {
         })
         .catch(error => res.status(400).json({error}))
         console.log("sauceLike",sauce)
+      
+        
     })
-    .catch(error => res.status( 500 ).json({error}))
+    .catch(error => res.status( 500 ).json({error}));
+   
 
-});
+});*/
 
 // ***création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
 router.put( "/:id", auth, upload, ( req, res ) => {
@@ -189,7 +192,7 @@ router.delete( "/:id", auth, ( req, res ) => {
 router.get( "/:id", auth, ( req, res ) => {
     // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete GET front-end pour afficher dans le DOM la sauce
     Sauce.findOne( {_id: req.params.id})// nous associons l element id de l endpoint à la requête qui recupere la valeur du parametre de recherche de la requête du front end avec le même element id de l'endpoint
-    .then(sauce => res.status( 200 ).json( sauce ) )//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoose findOne() 
+    .then(sauce => res.status( 200 ).json( sauce ) )//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoDB findOne() 
     .catch( error => res.status( 404 ).json( {error} ) );// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
 } );
 
