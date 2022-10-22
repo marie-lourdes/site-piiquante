@@ -41,7 +41,6 @@ router.post( "/", auth, upload, ( req, res ) => {
         dislikes: 0,
         usersLiked: [],
         usersDisliked: []
-
     } );
 
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de MongoDB
@@ -57,7 +56,7 @@ router.post( "/", auth, upload, ( req, res ) => {
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 } );
 
-// ***création de la route individuelle POST (pour la page sauce : pour requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
+// ***création de la route individuelle POST liker sauce (pour la page sauce : pour requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
 router.post("/:id/like", auth, ( req, res ) => {
 //par sécurité on supprime l userId ajouté par le requérant qui like et on ajoute dans le tableau usersLiked le userId ajouté à la requête signé (propriété auth de la requête req.auth) dans le middleware auth.js
     delete  req.body.userId;
@@ -65,58 +64,84 @@ router.post("/:id/like", auth, ( req, res ) => {
     Sauce.findOne( {_id: req.params.id} )
     .then( sauce => {
  
-        //Avant de modifier le tableau userLiked et la valeur de likes de la sauce, nous verifions que l utilisateurs requerant n est pas deja dans le tableau usersLiked de cette sauce avant de l y inscrire et enregistrer son vote
-        //cela permettra à l utilisateur de liker que si il n est pas  dans le tableau et qu il n a pas encore liker avec dans le corps de la requete like:1
+        /*-liker et disliker: Avant d'ajouter un utilisateur (userId) au tableau userLiked et usersDisliked et d' incrémenter la valeur de likes et dislikes de la sauce, 
+        nous verifions que l utilisateurs requerant n est pas deja dans le tableau usersLiked ou usersDisliked de cette sauce avant de l y inscrire et enregistrer son vote
+        cela permettra à l utilisateur de liker ou disliker que si il n est pas  dans le tableau correspondant et qu il n a pas encore liker ou disliker avec dans le corps de la requete like:1 pour liker ou like: -1 pour disliker*/
+        
+        /*-annuler un like ou un dislike: Avant de retirer un utilisateur du tableau usersLiked ou usersDisliked et de desincrementer la valeur de likes ou dislikes de la sauce,
+        nous verifions que l 'utilisateur requerant est bien inscrit dans le tableau correspondant avec dans le corps de la requête un like:0 pour l annulation d un like et l annulation d un dislike */
+       
         if( ! sauce.usersLiked.includes( req.auth.userId ) && req.body.like === 1){
            liker();  
+        }else if(sauce.usersLiked.includes( req.auth.userId ) && req.body.like === 0){
+           cancelLike();  
+
         }else if( ! sauce.usersDisliked.includes( req.auth.userId ) && req.body.like === -1){
            disliker();    
+        }else if(sauce.usersDisliked.includes( req.auth.userId ) && req.body.like === 0){
+           cancelDislike();
         }
-
+    //...........................fonctions liker, disliker, cancelLike, cancelDislike..........................................
         function liker(){
             //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
             Sauce.updateOne( {_id: req.params.id}, {
-                //avec l opérateur de mise à jour $inc:on incremente de 1 le champs likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
+                //avec l opérateur de mise à jour $inc:on incremente de 1 le champ likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
                 $inc: {likes: 1},
-                //avec l operateur de mise jour $push: on ajoute au champs usersLiked qui est un tableau la valeur de l userId du requérant
+                //avec l operateur de mise jour $push: on ajoute au champ usersLiked qui est un tableau la valeur de l userId du requérant
                 $push: {usersLiked: req.auth.userId}  
             })
             .then((sauce) => {
                 res.status(201).json({message:" sauce liké"});
                 console.log("sauce liké", sauce);
             })
-            .catch(error => res.status(400).json({error}));
-           
-           
-       }
-       function disliker(){
+            .catch(error => res.status(400).json({error}));     
+        }
+
+        function disliker(){
            Sauce.updateOne( {_id: req.params.id}, {
-                /*//avec l operateur de mise jour $push: on retire au champs usersLiked qui est un tableau la valeur de l userId du requérant
-                $pull: {usersLiked: req.auth.userId}, */
-   
-                //avec l opérateur de mise à jour $inc:on desincremente de 1 le champs likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
+                //avec l opérateur de mise à jour $inc:on incremente de 1 le champ dislikes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
                 $inc: {dislikes: 1},
-            
-                //avec l operateur de mise jour $pull: on ajoute au champs usersdisLiked qui est un tableau la valeur de l userId du requérant
+                //avec l operateur de mise jour $push: on ajoute au champs usersdisLiked qui est un tableau la valeur de l userId du requérant
                 $push: {usersDisliked: req.auth.userId} 
             })
             .then((sauce) => {
                 res.status(201).json({message:" sauce disliké"});
                 console.log("sauce disliké", sauce);
             })
+            .catch(error => res.status(400).json({error}));           
+        }
+
+        function cancelLike(){
+            //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
+            Sauce.updateOne( {_id: req.params.id}, {
+                //avec l opérateur de mise à jour $inc:on desincremente de 1 le champ likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
+                $inc: {likes: -1},
+                //avec l operateur de mise jour $pull: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
+                $pull: {usersLiked: req.auth.userId}  
+            })
+            .then((sauce) => {
+                res.status(201).json({message:" la sauce n est plus liké"});
+                console.log("sauce plus liké", sauce);
+            })
             .catch(error => res.status(400).json({error}));
-            
-            
-       }
-      
-   
-      
-      
-        
+        }
+
+        function cancelDislike(){
+            //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
+            Sauce.updateOne( {_id: req.params.id}, {
+                //avec l opérateur de mise à jour $inc:on desincremente de 1 le champ dislikes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
+                $inc: {dislikes: -1},
+                //avec l operateur de mise jour $push: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
+                $pull: {usersDisliked: req.auth.userId}  
+            })
+            .then((sauce) => {
+                res.status(201).json({message:" la sauce n est plus disliké"});
+                console.log("sauce plus disliké", sauce);
+            })
+            .catch(error => res.status(400).json({error}));
+        }      
     })
     .catch(error => res.status( 500 ).json({error}));// ou 404?
-   
-
 });
 
 // ***création de la route individuelle PUT (pour la page modify-sauce : pour requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
