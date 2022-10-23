@@ -1,5 +1,5 @@
 // import du modèle de sauces mongoose pour les opérations CRUD avec les methodes de mongoDB sur chaque route indivuelle
-const Sauce = require("../models/Sauces");
+const Sauce = require( "../models/Sauces" );
 //import du module native de node appelé fs
 const fs = require( "fs" );
 
@@ -44,7 +44,7 @@ exports.addSauce = ( req, res ) => {
     .catch( error => {
          res.status( 400 ).json( {error} ); 
     } );
-    console.log("sauce ajouté", sauce)
+    console.log( "sauce ajouté", sauce );
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
 } 
@@ -64,23 +64,26 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
             /*-annuler un like ou un dislike: Avant de retirer un utilisateur du tableau usersLiked ou usersDisliked et de desincrementer la valeur de likes ou dislikes de la sauce,
             nous verifions que l 'utilisateur requerant est bien inscrit dans le tableau correspondant avec dans le corps de la requête un like:0 pour l annulation d un like et l annulation d un dislike */
             const like = req.body.like;
-            switch(like){
+            // verification de la valeur du champs like de la requête utilisateur avec switch
+            switch( like ){
+            // si like = 1 et que l utilisateur requérant n est pas dans le tableau usersLiked on apelle la fonction liker()
                 case 1 :
-                    if( ! sauce.usersLiked.includes( req.auth.userId )){
+                    if( ! sauce.usersLiked.includes( req.auth.userId ) ){ 
                         liker();
                     }
                 break;
-    
+            // si like = -1 et que l utilisateur requérant n est pas dans le tableau usersLiked on apelle la fonction disliker()
                 case -1 :
-                    if( ! sauce.usersDisliked.includes( req.auth.userId )){
+                    if( ! sauce.usersDisliked.includes( req.auth.userId ) ){
                         disliker(); 
                     }
                 break;
-    
+            // si like = 0 et que l utilisateur requérant est dans le tableau usersLiked on apelle la fonction cancelLike()
+            // Si l utilisateur requérant est dans le tableau usersDisliked on apelle la fonction cancelDislike()
                 case 0 :
-                    if(sauce.usersLiked.includes( req.auth.userId )){
+                    if( sauce.usersLiked.includes( req.auth.userId ) ){
                         cancelLike();
-                    }else if(sauce.usersDisliked.includes( req.auth.userId )) {
+                    }else if( sauce.usersDisliked.includes( req.auth.userId ) ) {
                         cancelDislike();
                     }
                 break;
@@ -95,11 +98,11 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     //avec l operateur de mise jour $push: on ajoute au champ usersLiked qui est un tableau la valeur de l userId du requérant
                     $push: {usersLiked: req.auth.userId}  
                 })
-                .then((sauce) => {
-                    res.status(201).json({message:" sauce liké"});
-                    console.log("sauce liké", sauce);
+                .then( sauce => {
+                    res.status( 201 ).json( {message: "sauce liké"} );
+                    console.log( "sauce liké", sauce );
                 })
-                .catch(error => res.status(400).json({error}));     
+                .catch( error => res.status( 400 ).json( {error} ) );     
             }
     
             function disliker(){
@@ -109,11 +112,11 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     //avec l operateur de mise jour $push: on ajoute au champs usersdisLiked qui est un tableau la valeur de l userId du requérant
                     $push: {usersDisliked: req.auth.userId} 
                 })
-                .then((sauce) => {
-                    res.status(201).json({message:" sauce disliké"});
-                    console.log("sauce disliké", sauce);// resultat de la promesse de la methode updateOne: true avec la query de comparaison
+                .then( sauce => {
+                    res.status( 201 ).json( {message: "sauce disliké"} );
+                    console.log( "sauce disliké", sauce );// resultat de la promesse de la methode updateOne: true avec la query de comparaison
                 })
-                .catch(error => res.status(400).json({error}));           
+                .catch( error => res.status( 400 ).json( {error} ) );           
             }
     
             function cancelLike(){
@@ -124,11 +127,11 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     //avec l operateur de mise jour $pull: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
                     $pull: {usersLiked: req.auth.userId}  
                 })
-                .then((sauce) => {
-                    res.status(201).json({message:" la sauce n est plus liké"});
-                    console.log("sauce plus liké", sauce);
+                .then( sauce => {
+                    res.status( 201 ).json( {message: "la sauce n est plus liké"} );
+                    console.log( "sauce plus liké", sauce );
                 })
-                .catch(error => res.status(400).json({error}));
+                .catch( error => res.status( 400 ).json( {error} ) );
             }
     
             function cancelDislike(){
@@ -139,14 +142,14 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     //avec l operateur de mise jour $push: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
                     $pull: {usersDisliked: req.auth.userId}  
                 })
-                .then((sauce) => {
-                    res.status(201).json({message:" la sauce n est plus disliké"});
-                    console.log("sauce plus disliké", sauce);
+                .then( sauce => {
+                    res.status( 201 ).json( {message: "la sauce n est plus disliké"} );
+                    console.log( "sauce plus disliké", sauce );
                 })
-                .catch(error => res.status(400).json({error}));
+                .catch( error => res.status( 400 ).json( {error} ) );
             }      
         })
-        .catch(error => res.status( 500 ).json({error}));// ou 404?
+        .catch( error => res.status( 500 ).json( {error} ) );// ou 404?
     }
     
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
@@ -180,8 +183,9 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
         }else{
             // si l 'utilisateur est bien le propriétaire de la sauce il peut modifier la sauce et nous tenons compte de sa requête de modification en modifiant sa sauce depuis la collection sauces de la base de données avec la methode mongoose updateOne()
             // mais d abord: dans le cas ou le fichier est aussi modifié, avant la modification de la sauce, nous recuperons le nom du fichier  dans lurl de l image de la sauce enregistré dans la base de donné pour le supprimé du dossier back-end avec le module fs qui gere les fichiers dans un programme node
-            // si le champs de type file , que la requete comporte un objet file ajouter par le gestionnaire de telechargemnt des images (le middleware upload avec le package multer), nous supprimons d abord l image dans le dossier statique avec le module Fs et la methode unlink()
-            //puis nous modifions la sauce et l imageUrl qui va requeter sur le dossier staique images du back-end dans le src de l image dans le front end
+            
+            // si le champs de type file , que la requete comporte un objet file ajouté par le gestionnaire de telechargemnt des images (le middleware upload avec le package multer), nous supprimons d abord l image dans le dossier statique avec le module Fs et la methode unlink()
+            //puis nous modifions la sauce et l imageUrl qui va requeter sur le dossier statique images du back-end dans le src de l image dans le front end
             if( req.file ){
                 const fileName = sauce.imageUrl.split( "/images/" )[1];
                 // la methode fs.unlink() du module fs gere les fichiers dans un programme node ici il supprime le fichier que nous avons recuperons dans l imageUrl enregistré dans la sauce à modifié dans la base de donnée 
@@ -189,13 +193,13 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     if ( err ){
                         throw err; 
                     } 
-                    console.log( 'Image modifié !' );
-                  
                     modifSauce();
+                    console.log( 'Image et sauce modifiées !' );
                 });
             }else if( !req.file ){
-                            //si seuls les champs textuelles du formulaire ont été modifiés, nous remplaçons l'ancien contenu par le nouveau  sans modifier l image de cette sauce stocké dans le dossier statique du serveur back-end "images"
+            //si seuls les champs textuelles du formulaire ont été modifiés, nous remplaçons l'ancien contenu par le nouveau  sans modifier l image de cette sauce stocké dans le dossier statique du serveur back-end "images"
                 modifSauce();
+                console.log( 'sauce modifiée!' );
             }        
         }
         function modifSauce(){
@@ -254,6 +258,6 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   exports.get_DisplayAllSauces = ( req, res ) => {
     Sauce.find()// va chercher tous les elements dans la collection de la base de données , nous luis avons pas donnée de query de comparaison en argument
     .then( sauces => res.status( 200 ).json( sauces ) )// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
-    .catch( error => res.status( 400 ).json( {error} ) );// catch recupere l erreur generé sur la promesse envoyé par then  
+    .catch( error => res.status( 404 ).json( {error} ) );// catch recupere l erreur generé sur la promesse envoyé par then  
 }
 

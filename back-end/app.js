@@ -28,9 +28,9 @@ const mongoose = require( "mongoose" );
 
 // creation de la connexion avec authentification de l'application  express avec la base de données MongoDB Atlas
 // base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
-mongoose.connect(DB, {useNewUrlParser: true, useUnifiedTopology: true} )
-.then(() => console.log('Connexion à MongoDB réussie !' ) )
-.catch(() => console.log( 'Connexion à MongoDB échouée !' ) );
+mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
+.then( () => console.log( 'Connexion à MongoDB réussie !' ) )
+.catch( () => console.log( 'Connexion à MongoDB échouée !' ) );
 
 //........................CONFIGURATION GENERALE DES REQUETES ENTRANTES ET DE L'OBJET REQUEST DONT LE BODY EST INDIQUÉ  AU FORMAT JSON DANS LE HEADER DE LA REQUETE...................
 
@@ -43,6 +43,9 @@ app.use( express.json() );
 
 // configuration generale CORS de la reponse retourné (objet response) suite à une requete du front end avec la modification de la securite d acces au ressource de CORS
 // en ajoutant des headers à l objet response pour tout type de requete et sur toutes les routes
+
+corsConfiguration();
+
 function corsConfiguration (){
   app.use( ( req, res, next ) => {
     res.setHeader( 'Access-Control-Allow-Origin', '*' );
@@ -53,25 +56,16 @@ function corsConfiguration (){
 
 }
 
-corsConfiguration();
-
-
 // ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
 
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
 
-
-//creation de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traités de manière statique
-app.use("/images", express.static(path.join( __dirname, "images")));
+//création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique
+app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
 
 //création de la route de base pour les sauces
-app.use( "/api/sauces",  routerSauces);
-
-/*app.use( "/api/sauces",auth ,( req, res ) => {
-  console.log( "requete bien recue" )
-  res.status( 200 ).send( "requête reçue" );
-});*/
+app.use( "/api/sauces", routerSauces );
 
 // exporte la valeur actuelle de l objet exports du module app.js pour le rendre accessible hors de ce module, notamment au fichier server.js, pour que le serveur node s execute avec express et les fonctionnalités de l application express
 module.exports = app;

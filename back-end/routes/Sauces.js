@@ -1,11 +1,11 @@
 // import de l application express pour acceder à la méthode router et crée l objet router
 const express = require( "express" );
 //import du module auth pour authentifier et signer les requêtes  vers l API avec l id utilisateur
-const auth = require("../middlewares/auth");
+const auth = require( "../middlewares/auth" );
 //import du middleware multer
-const upload = require( "../middlewares/config-upload");
+const upload = require( "../middlewares/config-upload" );
 //import du controller pour accéder aux methodes du controller de sauce.js
-const saucesCtrler = require( "../controllers/Sauces.js");
+const saucesCtrler = require( "../controllers/Sauces" );
 // creation de l 'objet router qui recevra les routes individuelles
 const router = express.Router();
 
@@ -15,7 +15,7 @@ const router = express.Router();
 router.post( "/", auth, upload, saucesCtrler.addSauce );
 
 // ***création de la route individuelle POST liker sauce et sa fonction sémantique "add_Remove_NoticeLike"  (pour la page sauce : requeter avec la methode http POST et liker une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes 
-router.post("/:id/like", auth, saucesCtrler.add_Remove_NoticeLike );
+router.post( "/:id/like", auth, saucesCtrler.add_Remove_NoticeLike );
 
 // ***création de la route individuelle PUT et sa fonction sémantique "modifySauce" (pour la page modify-sauce :  requeter avec la methode http PUT une sauce spécifique)dans l objet router et ajout du middleware auth et upload qui gèrent l authentification des requêtes et le téléchargement des images par l utilisateur via le formulaire de la page "modify-sauce"
 router.put( "/:id", auth, upload, saucesCtrler.modifySauce );
