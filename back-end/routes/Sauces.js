@@ -71,15 +71,28 @@ router.post("/:id/like", auth, ( req, res ) => {
         /*-annuler un like ou un dislike: Avant de retirer un utilisateur du tableau usersLiked ou usersDisliked et de desincrementer la valeur de likes ou dislikes de la sauce,
         nous verifions que l 'utilisateur requerant est bien inscrit dans le tableau correspondant avec dans le corps de la requête un like:0 pour l annulation d un like et l annulation d un dislike */
        
-        if( ! sauce.usersLiked.includes( req.auth.userId ) && req.body.like === 1){
-           liker();  
-        }else if(sauce.usersLiked.includes( req.auth.userId ) && req.body.like === 0){
-           cancelLike();  
 
-        }else if( ! sauce.usersDisliked.includes( req.auth.userId ) && req.body.like === -1){
-           disliker();    
-        }else if(sauce.usersDisliked.includes( req.auth.userId ) && req.body.like === 0){
-           cancelDislike();
+        const like = req.body.like;
+        switch(like){
+            case 1 :
+                if( ! sauce.usersLiked.includes( req.auth.userId )){
+                    liker();
+                }
+            break;
+
+            case -1 :
+                if( ! sauce.usersDisliked.includes( req.auth.userId )){
+                    disliker(); 
+                }
+            break;
+
+            case 0 :
+                if(sauce.usersLiked.includes( req.auth.userId )){
+                    cancelLike();
+                }else if(sauce.usersDisliked.includes( req.auth.userId )) {
+                    cancelDislike();
+                }
+            break;
         }
     //...........................fonctions liker, disliker, cancelLike, cancelDislike..........................................
         function liker(){
@@ -106,7 +119,7 @@ router.post("/:id/like", auth, ( req, res ) => {
             })
             .then((sauce) => {
                 res.status(201).json({message:" sauce disliké"});
-                console.log("sauce disliké", sauce);
+                console.log("sauce disliké", sauce);// resultat de la promesse de la methode updateOne: true avec la query de comparaison
             })
             .catch(error => res.status(400).json({error}));           
         }
