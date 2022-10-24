@@ -9,6 +9,9 @@ const DB = process.env.URI_DB;
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
 
+// import du module helmet
+const helmet = require( "helmet" );
+
 // import du package path pour normaliser le chemin d'acces au dossier images du serveur back end
 const path = require( "path" );
 
@@ -55,6 +58,9 @@ function corsConfiguration (){
   });
 
 }
+// ............................SECURISATION GENERALE DES REQUETES HTTP - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................
+
+app.use( helmet() );
 
 // ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
 
