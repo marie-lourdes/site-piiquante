@@ -64,7 +64,7 @@ exports.login = ( req, res ) => {
               // on s 'assure de crypter avec sign() le token de l utilisateur avec l'id  de l utilisateur qui a été recherché et verifié avec l email et le mot entré par l'utilisateur via la requête Post du formaulaire de connexion
               {userId: user._id },
               TOKEN,// algorithme de cryptage du "token" ("chaine secrète de développement temporaire" ) securisé dans un fichier isole du code de l application
-              {expiresIn: "24h"}
+              {expiresIn: "1h"}
             )          
           } ); 
         
