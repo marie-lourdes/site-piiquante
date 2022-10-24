@@ -35,6 +35,14 @@ mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
 .then( () => console.log( 'Connexion à MongoDB réussie !' ) )
 .catch( () => console.log( 'Connexion à MongoDB échouée !' ) );
 
+//..........................CONFIGURATION GÉNÉRALE POUR LES RESSOURCES IMAGES TELECHARGÉES PAR L UTILISATEUR ET SAUVEGARDÉ PAR MULTER:création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique.................
+//placé avant les middlewares helmet contenant des restrictions x-frame-options, 
+app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
+
+// ............................SECURISATION GENERALE DES REQUETES HTTP CONTRE LES ATTAQUES CSRF - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................
+
+app.use( helmet() );
+
 //........................CONFIGURATION GENERALE DES REQUETES ENTRANTES ET DE L'OBJET REQUEST DONT LE BODY EST INDIQUÉ  AU FORMAT JSON DANS LE HEADER DE LA REQUETE...................
 
 // ajout d un middleware integrée a express qui va recuperer toutes les requêtes entrante (objet request) dont le body est en content-type: application json
@@ -51,6 +59,7 @@ corsConfiguration();
 
 function corsConfiguration (){
   app.use( ( req, res, next ) => {
+   /* res.setHeader('Content-Security-Policy','frame-ancestors "self" http://*' )*/
     res.setHeader( 'Access-Control-Allow-Origin', '*' );
     res.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization' );
     res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS' );
@@ -58,17 +67,14 @@ function corsConfiguration (){
   });
 
 }
-// ............................SECURISATION GENERALE DES REQUETES HTTP - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................
-
-app.use( helmet() );
 
 // ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
+
 
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
 
-//création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique
-app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
+
 
 //création de la route de base pour les sauces
 app.use( "/api/sauces", routerSauces );
