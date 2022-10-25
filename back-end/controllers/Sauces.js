@@ -163,6 +163,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
 
   exports.modifySauce = ( req, res ) => {
+    // suppression des caractères speciaux des champs textuelles qui sont dans le body de la requete si le body n est pas envoyé avec leformat multipart/form-data soit dans l objet sauce ajouté par multer dans le body de la requête
     let sauceputObjt = req.file ? req.body.sauce : JSON.stringify(req.body);
      sauceputObjt = deleteChars( sauceputObjt ); 
     /* vérification de l objet body envoyé 
