@@ -164,7 +164,8 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
 
   exports.modifySauce = ( req, res ) => {
     // suppression des caractères speciaux des champs textuelles qui sont dans le body de la requete si le body n est pas envoyé avec leformat multipart/form-data soit dans l objet sauce ajouté par multer dans le body de la requête
-    let sauceputObjt = req.file ? req.body.sauce : JSON.stringify(req.body);
+    let sauceputObjt =
+     req.file ? req.body.sauce : JSON.stringify(req.body);
      sauceputObjt = deleteChars( sauceputObjt ); 
     /* vérification de l objet body envoyé 
     - si il est sous forme de clé valeur par le constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file(pour le fichier)
