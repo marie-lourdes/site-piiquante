@@ -163,14 +163,14 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
 
   exports.modifySauce = ( req, res ) => {
-
-    let sauceObjt = deleteChars( sauceObjt ); 
+    let sauceputObjt = req.file ? req.body.sauce : JSON.stringify(req.body);
+     sauceputObjt = deleteChars( sauceputObjt ); 
     /* vérification de l objet body envoyé 
     - si il est sous forme de clé valeur par le constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file(pour le fichier)
     - si il est sous forme d'objet json sans fichier donc pas sous la forme form-data et donc non modifié par le middleware upload (multer)*/
-    sauceObjt = 
-        req.file ? { ...JSON.parse( req.body.sauce ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
-        : {...req.body};
+    const sauceObjt = 
+        req.file ? { ...JSON.parse( sauceputObjt ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
+        : {...JSON.parse(sauceputObjt)};
 
     /* par securité nous supprimons l userId ajouté dans la requête par l utilisateur 
     et recupererons l userId que nous avons ajouté à la requête lors de l 'authentification de l utilisateur du middleware auth
