@@ -5,17 +5,25 @@ const fs = require( "fs" );
 
 //............................CREATION DES FONCTIONS SEMANTIQUES DU CONTROLLERS POUR LES OPÉRATIONS CRUD (logique metier de chaque routes individuelles dans l objet router pour les sauces) SUR LES ROUTES INDIVIDUELLES DANS ROUTES SAUCES.JS.............................
 
+// fonction pour supprimer les caractères spéciaux des entrées utilisateurs du formulaire add-sauce et modify-sauce et éviter les injections ou XSS
+function deleteChars(chars){
+    chars = chars.replace(/[`~@#$&*_|+\-=?;'<>/]/gi, '')
+    return chars;
+}
+
 // *** fonction sémantique de la logique routing router.post("/"): ajouter une sauce 
 
 exports.addSauce = ( req, res ) => {
+    let objtSauce = req.body.sauce;
+    objtSauce = deleteChars( objtSauce );
     // on récupère l objet body ajouté dans la requête par multer et transformé en chaine de caractère et on le reconstruis en mémoire en objet javascript avec JSON.parse
-    const objtSauce = JSON.parse( req.body.sauce );
+    objtSauce = JSON.parse( objtSauce );
     // on supprime l id generé par le front- end car la base de donnée génère déja un id pour la sauce crée et enregistré dans la base de données
     delete objtSauce._id;
     // Par sécurité on supprime le userId dans la requête utilisateur pour ne pas enregistrer un userId qui serait pas celui de l utilisateur requérant authentifié par le middleware auth
     //Nous utliserons l 'userId que nous avons fournit dans la verification du token et de la requete utilisateur pour l 'enregistrer dans la base de donnée
     delete objtSauce.userId;
-
+    
     //création d une nouvelle instance du modele Sauce et enregistrement du modèle et de ses  données structurée dans la base de données
     const sauce = new Sauce( {
         /*. on recupère et insérons dans le modèle, les données de la requete POST utilisateur,
@@ -155,10 +163,12 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
 
   exports.modifySauce = ( req, res ) => {
+
+    let sauceObjt = deleteChars( sauceObjt ); 
     /* vérification de l objet body envoyé 
     - si il est sous forme de clé valeur par le constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file(pour le fichier)
     - si il est sous forme d'objet json sans fichier donc pas sous la forme form-data et donc non modifié par le middleware upload (multer)*/
-    const sauceObjt = 
+    sauceObjt = 
         req.file ? { ...JSON.parse( req.body.sauce ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
         : {...req.body};
 
