@@ -36,16 +36,35 @@ const TOKEN = process.env.TOKEN_REQUEST;
 };
 
 // fonction controller pour la connexion et la verification des identifiant de connexion
+let userRequest = 0;
+                  
+console.log("userrequest",userRequest)
 exports.login = ( req, res ) => {
     // recherche de l utilisateur enregistré dans la collection users de la base de donnée avec l 'email qui contient l email entré dans le formulaire de connexion par l 'utilisateur qui se connecte
     User.findOne( {email: req.body.email} )
     .then( user => { //recuperation de l utilisateur ayant l email avec la valeur entré par l utilisateur lors de la requête
-        if( !user ){ // verification du resultat  envoyé  dans la promesse de findOne() si la valeur vaut false , c'est qu il n y a aucune correspondance avec un utilisateur enregistré dans la base de donné ayant l email entré lors de la requete POST du front-end lors de la validation du formulaire de connexion
-            return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
-            // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
-            // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
-        }
 
+        if( !user ){ // verification du resultat  envoyé  dans la promesse de findOne() si la valeur vaut false , c'est qu il n y a aucune correspondance avec un utilisateur enregistré dans la base de donné ayant l email entré lors de la requete POST du front-end lors de la validation du formulaire de connexion
+         
+          userRequest++;
+          console.log("userrequest compteur", userRequest )
+          if( userRequest < 3 ){  
+          return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
+          // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
+          // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
+         
+          }else if( userRequest >= 3){
+           console.log( "force brute ou oublie de l utilisateur" )
+          // process.exit(1)
+           const erreur = "une erreur s'est produite:essayez ulterieurement"
+           // code erreur 500(pas 400 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
+          
+           throw erreur
+           
+          }
+           
+        }
+      
        // après verification ci dessus de l'utilisateur avec son email et si l utilisateur existe avec l email indique dans le corps de la requête POST du formulaire de connexion
        // on verifie le mot de passe saisi par l utilisateur dans le formulaire avec la methode de vérification et de comparaison du package bcrypt
        // si le mot de passe saisi par l utilisateur  haché par bcrypt a un hash qui resulte de la meme chaine de caractere qui à crée le hash du mot de  passe de l utilisateur enregistré dans la base de donnée,la methode compare renvoit true dans le cas contraire false
