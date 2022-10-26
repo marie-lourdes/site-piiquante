@@ -36,7 +36,7 @@ mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
 .catch( () => console.log( 'Connexion à MongoDB échouée !' ) );
 
 //..........................CONFIGURATION GÉNÉRALE POUR LES RESSOURCES IMAGES TELECHARGÉES PAR L UTILISATEUR ET SAUVEGARDÉ PAR MULTER:création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique.................
-//cette route est placé avant les middlewares helmet contenant des restrictions x-frame-options et empechant les requêtes imagesUrl, 
+//cette route est placé avant les middlewares helmet, ces derniers contiennent  des restrictions x-frame-options et empechant les requêtes imagesUrl, 
 app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
 
 // ............................SECURISATION GENERALE DES REQUETES HTTP CONTRE LES ATTAQUES CSRF - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................

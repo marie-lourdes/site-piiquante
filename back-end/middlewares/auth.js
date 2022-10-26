@@ -20,6 +20,7 @@ module.exports = (req, res, next) => {
      next();
     }catch( error ){
         res.status( 401 ).json( {error} );
+        throw error // stopper le controle d authentification pour eviter le contournement d autorisation
     }
 
 };
