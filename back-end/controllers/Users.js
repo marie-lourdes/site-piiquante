@@ -55,11 +55,11 @@ exports.login = ( req, res ) => {
          
           }else if( userRequest >= 3){
            console.log( "force brute ou oublie de l utilisateur" )
-           process.exit(1)
+           //process.exit(1)
            const erreur = "une erreur s'est produite:essayez ulterieurement"
            // code erreur 500(pas 400 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
           
-           //throw erreur
+           throw erreur
            
           }
            
