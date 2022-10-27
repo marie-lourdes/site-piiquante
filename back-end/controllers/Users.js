@@ -85,7 +85,7 @@ exports.login = ( req, res ) => {
             console.log( "force brute ou oublie de l utilisateur" )
             // process.exit()
             const erreur = "une erreur s'est produite:essayez ulterieurement"
-            // code erreur 500(pas 400 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
+              // le catch suivant le bloc then recupère l erreur de throw et envoit le code erreur 500 et le message de throw(pas le code 401 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
             
             throw erreur;
             
@@ -106,23 +106,22 @@ exports.login = ( req, res ) => {
 
            if( userRequestPassword < 3 ){  
             return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
-            // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
-            // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
+            // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
+            // nous précisons pas que l 'erreur vient du mot de passe , qui ne correspond pas à l'utilisateur avec l'email indiqué dans la requête de l utilisateur et trouvé  dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
+           
            
             }else if( userRequestPassword >= 3){
              console.log( "force brute ou oublie de l utilisateur" )
             // process.exit()
-             const erreur = "une erreur s'est produite:essayez ulterieurement bis"
-             // code erreur 500(pas 400 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
+           
+              const erreur = "une erreur s'est produite:essayez ulterieurement bis"
+             // le catch suivant recupère l erreur de throw et envoit le code erreur 500 et le message de throw(pas le code 401 ou 400  en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
             
              throw erreur;
              
             }
-
-
-            /*return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} )*/
-            // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
-            // nous précisons pas que l 'erreur vient du mot de passe , qui ne correspond pas à l'utilisateur avec l'email indiqué dans la requête de l utilisateur et trouvé  dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
+     
+            
           }
           // si le mot de passe est valid nous envoyons dans la reponse de la requête l'id de l utilisateur et un token crypté pour les opération CRUD qu'il souhaite faire sur les ressources de l'api
           res.status( 200 ).json( {
@@ -138,7 +137,7 @@ exports.login = ( req, res ) => {
         } )
         .catch( error =>{
           res.status( 500 ).json( {error} ) ;
-          throw error
+          
 
         });
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe

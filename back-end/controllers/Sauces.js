@@ -157,7 +157,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                 .catch( error => res.status( 400 ).json( {error} ) );
             }      
         })
-        .catch( error => res.status( 500 ).json( {error} ) );// ou 404?
+        .catch( error => res.status( 500 ).json( {error} ) );
     }
     
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
