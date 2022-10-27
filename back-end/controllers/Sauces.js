@@ -29,7 +29,7 @@ exports.addSauce = ( req, res ) => {
         /*. on recupère et insérons dans le modèle, les données de la requete POST utilisateur,
          les données parsées de l objet body appelé sauce  qui est stocké dans objtSauce en une seule fois avec l opérateur spread "..."*/
         ...objtSauce,
-        
+
         /* on enregistre la sauce avec userId qui a été authentifié et ajouté à la propriété de cette requête précisement, 
         pour plus de sécurité au niveau des requêtes signées et securise l 'accés et sécurise les opérations CRUD sur les données de la base de données de l'API*/
         userId: req.auth.userId,
@@ -38,24 +38,45 @@ exports.addSauce = ( req, res ) => {
         imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`,
 
         // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Poste
-      
         likes:0,
         dislikes:0,
         usersLiked: [],
-        usersDisliked: []
-      
+        usersDisliked: []   
     } );
  
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de MongoDB
     sauce.save()
     .then( () => {
         res.status( 201 ).json( {message: "Votre sauce a bien été ajoutée"} );
+        console.log( "sauce ajouté", sauce );
     } )
-    .catch( error => res.status( 400 ).json( {error: error.message} ) );
-    // on ne montre pas tout le contenu de l erreur ni l application qui gere l erreur mais le message envoyé sans le modifier ( selon les consignes) bien qu il soit conseillé de le personnaliser selon l'OWASP
-    console.log( "sauce ajouté", sauce );
+    .catch( error => {
+   
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
+     // on ne montre pas tout le contenu de l erreur ni l application qui gere l erreur mais le message envoyé sans le modifier ( selon les consignes) bien qu il soit conseillé de le personnaliser selon l'OWASP
+        res.status( 400 ).json( {error: error.message} ) 
+
+    // logging erreurs detaillés pour chaque champs 
+        logError(error.errors.name, error.errors.name.message)
+        logError(error.errors.manufacturer, error.errors.manufacturer.message)
+        logError(error.errors.description, error.errors.description.message)
+        logError(error.errors.mainPepper, error.errors.mainPepper.message)
+        logError(error.errors.userId, error.errors.userId.message)
+        logError(error.errors.imageUrl, error.errors.imageUrl.message)
+        logError(error.errors.likes, error.errors.likes.message)
+        logError(error.errors.dislikes, error.errors.dislikes.message)
+        logError(error.errors.usersLiked, error.errors.usersLiked.message)
+        logError(error.errors.usersDisliked, error.errors.usersDisliked.message)
+
+        function logError( errorSauce, messageError ){
+            if( errorSauce ){
+                console.log( "erreur description", messageError )
+            }else{
+                console.log( " une erreur inconnue s est produite" )
+            }
+        }
+    } );  
 } 
 
 // *** fonction sémantique de la logique routing router.post("/:id/like"): liker, disliker une sauce specifique ou annuler un like ou dislike 
@@ -106,12 +127,15 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     $inc: {likes: 1},
                     //avec l operateur de mise jour $push: on ajoute au champ usersLiked qui est un tableau la valeur de l userId du requérant
                     $push: {usersLiked: req.auth.userId}  
-                })
+                } )
                 .then( sauce => {
                     res.status( 201 ).json( {message: "sauce liké"} );
                     console.log( "sauce liké", sauce );
-                })
-                .catch( error => res.status( 400 ).json( {error} ) );     
+                } )
+                .catch( error => {
+                    res.status( 400 ).json( {error} )
+                    console.log( "erreur requête liker", error.message )
+                } );     
             }
     
             function disliker(){
@@ -120,11 +144,11 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     $inc: {dislikes: 1},
                     //avec l operateur de mise jour $push: on ajoute au champs usersdisLiked qui est un tableau la valeur de l userId du requérant
                     $push: {usersDisliked: req.auth.userId} 
-                })
+                } )
                 .then( sauce => {
                     res.status( 201 ).json( {message: "sauce disliké"} );
                     console.log( "sauce disliké", sauce );// resultat de la promesse de la methode updateOne: true avec la query de comparaison
-                })
+                } )
                 .catch( error => res.status( 400 ).json( {error} ) );           
             }
     
@@ -135,11 +159,11 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     $inc: {likes: -1},
                     //avec l operateur de mise jour $pull: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
                     $pull: {usersLiked: req.auth.userId}  
-                })
+                } )
                 .then( sauce => {
                     res.status( 201 ).json( {message: "la sauce n est plus liké"} );
                     console.log( "sauce plus liké", sauce );
-                })
+                } )
                 .catch( error => res.status( 400 ).json( {error} ) );
             }
     
@@ -150,14 +174,14 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     $inc: {dislikes: -1},
                     //avec l operateur de mise jour $push: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
                     $pull: {usersDisliked: req.auth.userId}  
-                })
+                } )
                 .then( sauce => {
                     res.status( 201 ).json( {message: "la sauce n est plus disliké"} );
                     console.log( "sauce plus disliké", sauce );
-                })
+                } )
                 .catch( error => res.status( 400 ).json( {error} ) );
             }      
-        })
+        } )
         .catch( error => res.status( 500 ).json( {error} ) );
     }
     
@@ -221,7 +245,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
           .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
           .catch( error => res.status( 400 ).json( {error} ) );// envoie du code htpp 400 qui signale une erreur coté client
         }
-    })
+    } )
     .catch( error => res.status( 500 ).json( {error} ) ); 
     //catch va recuperer l erreur généré par la promesse envoyé du premier then et l 'envoyer dans la réponse modifié avec le status 500 erreur serveur
 }
@@ -252,9 +276,9 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                 Sauce.deleteOne( {_id: req.params.id} )
                 .then( () => res.status( 200 ).json( {message: "la sauce a bien été supprimée"} ) )// envoie du code http 200 de la requête reussie
                 .catch( error => res.status( 400 ).json( {error} ) );// envoie du code htpp 400 qui signale une erreur coté client       
-            });            
+            } );            
         }     
-    })
+    } )
     .catch( error => res.status( 500 ).json( {error} ) );// on recupere les erreurs genéré par la promesse du premier then et on envoie un erreur coté serveur, si la suppression ne se fait du à un pb avec la base de donnée ou du serveur en lui même
 } 
 
