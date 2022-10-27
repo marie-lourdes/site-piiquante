@@ -43,11 +43,10 @@ exports.login = ( req, res ) => {
     User.findOne( {email: req.body.email} )
     .then( user => { //recuperation de l utilisateur ayant l email avec la valeur entré par l utilisateur lors de la requête
         if( !user ){ // verification du resultat  envoyé  dans la promesse de findOne() si la valeur vaut false , c'est qu il n y a aucune correspondance avec un utilisateur enregistré dans la base de donné ayant l email entré lors de la requete POST du front-end lors de la validation du formulaire de connexion
-   
+          
           // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
           // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
-          res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
-        
+          res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} )    
         }
       
         // après verification ci dessus de l'utilisateur avec son email et si l utilisateur existe avec l email indique dans le corps de la requête POST du formulaire de connexion
@@ -70,8 +69,7 @@ exports.login = ( req, res ) => {
               TOKEN,// algorithme de cryptage du "token" ("chaine secrète de développement temporaire" ) securisé dans un fichier isole du code de l application
               {expiresIn: "1h"}
             )          
-          } ); 
-        
+          } );       
         } )
         .catch( error => res.status( 500 ).json( {error} ) );
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
