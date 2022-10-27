@@ -46,8 +46,6 @@ exports.addSauce = ( req, res ) => {
       
     } );
  
-   
-
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de MongoDB
     sauce.save()
     .then( () => {
