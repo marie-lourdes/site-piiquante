@@ -18,6 +18,13 @@ const sauceShema = mongoose.Schema( {
     usersDisliked: [String]
 } );
 
+function validator(value){
+    if(typeof value == 'number' || !value)
+    throw "name erreor"
+}
+
+sauceShema.path('name').validate(validator, 'no valid')
+
 module.exports = mongoose.model( "Sauce", sauceShema);
 
 

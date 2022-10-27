@@ -28,8 +28,8 @@ exports.addSauce = ( req, res ) => {
     const sauce = new Sauce( {
         /*. on recupère et insérons dans le modèle, les données de la requete POST utilisateur,
          les données parsées de l objet body appelé sauce  qui est stocké dans objtSauce en une seule fois avec l opérateur spread "..."*/
-        ...objtSauce,
-
+   
+        
         /* on enregistre la sauce avec userId qui a été authentifié et ajouté à la propriété de cette requête précisement, 
         pour plus de sécurité au niveau des requêtes signées et securise l 'accés et sécurise les opérations CRUD sur les données de la base de données de l'API*/
         userId: req.auth.userId,
@@ -38,11 +38,15 @@ exports.addSauce = ( req, res ) => {
         imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`,
 
         // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Poste
-        likes: 0, 
-        dislikes: 0,
+       
+        likes:0,
+        dislikes:0,
         usersLiked: [],
         usersDisliked: []
+      
     } );
+ 
+   
 
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de MongoDB
     sauce.save()
@@ -50,7 +54,15 @@ exports.addSauce = ( req, res ) => {
         res.status( 201 ).json( {message: "Votre sauce a bien été ajoutée"} );
     } )
     .catch( error => {
-         res.status( 400 ).json( {error} ); 
+       const erreur = {
+
+       }
+       if(error.errors.description){
+        erreur.message = error.errors.description.message;
+       }else if(error.errors.message){
+        erreur.message= " une erreur s est produite"
+       }
+         res.status( 400 ).json( {error: erreur} ); 
     } );
     console.log( "sauce ajouté", sauce );
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
