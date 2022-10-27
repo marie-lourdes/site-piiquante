@@ -28,7 +28,7 @@ exports.addSauce = ( req, res ) => {
     const sauce = new Sauce( {
         /*. on recupère et insérons dans le modèle, les données de la requete POST utilisateur,
          les données parsées de l objet body appelé sauce  qui est stocké dans objtSauce en une seule fois avec l opérateur spread "..."*/
-   
+        ...objtSauce,
         
         /* on enregistre la sauce avec userId qui a été authentifié et ajouté à la propriété de cette requête précisement, 
         pour plus de sécurité au niveau des requêtes signées et securise l 'accés et sécurise les opérations CRUD sur les données de la base de données de l'API*/
@@ -38,7 +38,7 @@ exports.addSauce = ( req, res ) => {
         imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`,
 
         // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Poste
-       
+      
         likes:0,
         dislikes:0,
         usersLiked: [],
@@ -51,17 +51,8 @@ exports.addSauce = ( req, res ) => {
     .then( () => {
         res.status( 201 ).json( {message: "Votre sauce a bien été ajoutée"} );
     } )
-    .catch( error => {
-       const erreur = {
-
-       }
-       if(error.errors.description){
-        erreur.message = error.errors.description.message;
-       }else if(error.errors.message){
-        erreur.message= " une erreur s est produite"
-       }
-         res.status( 400 ).json( {error: erreur} ); 
-    } );
+    .catch( error => res.status( 400 ).json( {error: error.message} ) );
+    // on ne montre pas tout le contenu de l erreur ni l application qui gere l erreur mais le message envoyé sans le modifier ( selon les consignes) bien qu il soit conseillé de le personnaliser selon l'OWASP
     console.log( "sauce ajouté", sauce );
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
