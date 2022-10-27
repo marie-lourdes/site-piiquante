@@ -36,33 +36,61 @@ const TOKEN = process.env.TOKEN_REQUEST;
 };
 
 // fonction controller pour la connexion et la verification des identifiant de connexion
-let userRequest = 0;
+
+let userRequestMail = 0;
                   
-console.log("userrequest",userRequest)
+console.log("userrequest",userRequestMail)
+
+let userRequestPassword= 0;
+console.log("userrequestPassword",userRequestPassword)
+
+
+
 exports.login = ( req, res ) => {
+ 
+    /*function limitConnexion(userRequestError){
+        
+      switch(userRequestError < 3){
+        case  true :
+      res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ); 
+      break;
+        
+        case false:
+        console.log( "force brute ou oublie de l utilisateur" )
+        const erreur = "une erreur s'est produite:essayez ulterieurement";
+        throw erreur
+
+      }
+
+    }*/
+ 
     // recherche de l utilisateur enregistré dans la collection users de la base de donnée avec l 'email qui contient l email entré dans le formulaire de connexion par l 'utilisateur qui se connecte
     User.findOne( {email: req.body.email} )
     .then( user => { //recuperation de l utilisateur ayant l email avec la valeur entré par l utilisateur lors de la requête
 
         if( !user ){ // verification du resultat  envoyé  dans la promesse de findOne() si la valeur vaut false , c'est qu il n y a aucune correspondance avec un utilisateur enregistré dans la base de donné ayant l email entré lors de la requete POST du front-end lors de la validation du formulaire de connexion
          
-          userRequest++;
-          console.log("userrequest compteur", userRequest )
-          if( userRequest < 3 ){  
-          return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
-          // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
-          // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
-         
-          }else if( userRequest >= 3){
-           console.log( "force brute ou oublie de l utilisateur" )
-           //process.exit(1)
-           const erreur = "une erreur s'est produite:essayez ulterieurement"
-           // code erreur 500(pas 400 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
+          userRequestMail++;
+          console.log("userrequest compteur", userRequestMail )
+          /* limitConnexion(userRequestMail);*/
+       
           
-           throw erreur
-           
-          }
-           
+          
+          if( userRequestMail < 3 ){  
+            return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
+            // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
+            // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
+          
+            }else if( userRequestMail >= 3){
+            console.log( "force brute ou oublie de l utilisateur" )
+            // process.exit()
+            const erreur = "une erreur s'est produite:essayez ulterieurement"
+            // code erreur 500(pas 400 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
+            
+            throw erreur;
+            
+            }
+        
         }
       
        // après verification ci dessus de l'utilisateur avec son email et si l utilisateur existe avec l email indique dans le corps de la requête POST du formulaire de connexion
@@ -72,7 +100,27 @@ exports.login = ( req, res ) => {
         .then( valid => {
           // on recupere le resultat de la methode compare(), si c'est false , le bloc then execute le code suivant dans la structure conditionnelle
           if( !valid ){
-            return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} )
+            userRequestPassword++;
+            console.log("userrequestpassword compteur", userRequestPassword )
+           // limitConnexion(userRequestPassword);
+
+           if( userRequestPassword < 3 ){  
+            return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
+            // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
+            // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
+           
+            }else if( userRequestPassword >= 3){
+             console.log( "force brute ou oublie de l utilisateur" )
+            // process.exit()
+             const erreur = "une erreur s'est produite:essayez ulterieurement bis"
+             // code erreur 500(pas 400 en cas de fbrute car ce n est pas une vrai erreur de requete client ) affiché quand le dernier catch recupere l erreur dans la levé d execption throw et le nom de l exception  pour les attaquants
+            
+             throw erreur;
+             
+            }
+
+
+            /*return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} )*/
             // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
             // nous précisons pas que l 'erreur vient du mot de passe , qui ne correspond pas à l'utilisateur avec l'email indiqué dans la requête de l utilisateur et trouvé  dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
           }
@@ -88,9 +136,62 @@ exports.login = ( req, res ) => {
           } ); 
         
         } )
-        .catch( error => res.status( 500 ).json( {error} ) );
+        .catch( error =>{
+          res.status( 500 ).json( {error} ) ;
+          throw error
+
+        });
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
     })
-    .catch( error => res.status( 500 ).json( {error} ) );
+    .catch( error => {
+      res.status( 500 ).json( {error} ) 
+      throw error;
+    
+    });
+  
+ 
     //catch recupere l erreur genéré par la methode findOne() de mongoose quand le serveur(plus précisement l'api qui gere les requetes serveur) ne trouvera pas l'utilisateur dans la base de données 
 };
+
+//...............................TEST REDEMERRAGE PROCESS.............................
+/*function exitHandler(options, exitCode) {
+    if (options.cleanup) console.log('clean');
+    if (exitCode || exitCode === 0) console.log(exitCode);
+   // if (options.exit) process.exit();
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+
+// catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+
+//catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+/*
+
+
+//................................................................................
+const { spawn } = require('child_process');
+
+function main() {
+  if (process.env.process_restarting) {
+    delete process.env.process_restarting;
+    // Give old process one second to shut down before continuing ...
+    setTimeout(main, 1000);
+    return;
+  }
+
+  // ...
+
+  // Restart process ...
+  spawn(process.argv[0], process.argv.slice(1), {
+    env: { process_restarting: 1 },
+    stdio: 'ignore',
+  }).unref();
+}
+main();*/
