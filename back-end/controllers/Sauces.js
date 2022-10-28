@@ -15,7 +15,22 @@ function deleteChars(chars){
 
 exports.addSauce = ( req, res ) => {
     let objtSauce = req.body.sauce;
-    objtSauce = deleteChars( objtSauce );
+   
+    // verifier que les données transmis par l utilisateur provient bien de la même personne authentifié et de la même demande requête auquel on a ajouté la propriété auth et l userId qui signe la requête
+    //pour eviter la modification des données d'un pirate et l injection de code arbitraire dans l application lors de la deserialisation des données utilisateur.
+    // on reverifie l authentification faite au préalable
+
+    //avant de deserialiser les données: on verifie si le userId ajouté lors de la verification du token est present sinon l utilisateur n est pas authentifié, ou la validité du token est depassé,
+    //et on verifie que l userId  ajouté dans le corps de la requête front-end est le même que l userId ajouté à la requête apres la verification du token 
+    // dans ces deux cas nous stoppons la fonction addSauce et ne parsons pas les données de l utilisateur
+    if( !req.auth.userId && objtSauce.userId !== req.auth.userId){
+        console.log( "requête non signé, non athentifié")
+        throw "accès non autorisé"
+    } 
+
+    //on supprime les caractères spéciaux des entrées utilisateurs
+     objtSauce = deleteChars( objtSauce );
+
     // on récupère l objet body ajouté dans la requête par multer et transformé en chaine de caractère et on le reconstruis en mémoire en objet javascript avec JSON.parse
     objtSauce = JSON.parse( objtSauce );
     // on supprime l id generé par le front- end car la base de donnée génère déja un id pour la sauce crée et enregistré dans la base de données
@@ -82,6 +97,11 @@ exports.addSauce = ( req, res ) => {
 // *** fonction sémantique de la logique routing router.post("/:id/like"): liker, disliker une sauce specifique ou annuler un like ou dislike 
 
 exports.add_Remove_NoticeLike = ( req, res ) => {
+    // Reverification de l'authentification 
+    if( !req.auth.userId && req.body.userId !== req.auth.userId){
+        console.log( "requête non signé, non athentifié")
+        throw "accès non autorisé"
+    } 
     //par sécurité on supprime l userId ajouté par le requérant qui like et on ajoute dans le tableau usersLiked le userId ajouté à la requête signé (propriété auth de la requête req.auth) dans le middleware auth.js
         delete  req.body.userId;
         Sauce.findOne( {_id: req.params.id} )
@@ -188,16 +208,21 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
 
   exports.modifySauce = ( req, res ) => {
-    // suppression des caractères speciaux des champs textuelles qui sont dans le body de la requete si le body n est pas envoyé avec leformat multipart/form-data soit dans l objet sauce ajouté par multer dans le body de la requête
-    let sauceputObjt =
+    let saucePutObjt =
      req.file ? req.body.sauce : JSON.stringify(req.body);
-     sauceputObjt = deleteChars( sauceputObjt ); 
+
+    if( !req.auth.userId && saucePutObjt.userId !== req.auth.userId){
+        console.log( "requête non signé, non athentifié")
+        throw "accès non autorisé"
+    } 
+    // suppression des caractères speciaux des champs textuelles qui sont dans le body de la requete si le body n est pas envoyé avec leformat multipart/form-data soit dans l objet sauce ajouté par multer dans le body de la requête
+     saucePutObjt = deleteChars( saucePutObjt ); 
     /* vérification de l objet body envoyé 
     - si il est sous forme de clé valeur par le constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file(pour le fichier)
     - si il est sous forme d'objet json sans fichier donc pas sous la forme form-data et donc non modifié par le middleware upload (multer)*/
     const sauceObjt = 
-        req.file ? { ...JSON.parse( sauceputObjt ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
-        : {...JSON.parse(sauceputObjt)};
+        req.file ? { ...JSON.parse( saucePutObjt ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
+        : {...JSON.parse(saucePutObjt)};
 
     /* par securité nous supprimons l userId ajouté dans la requête par l utilisateur 
     et recupererons l userId que nous avons ajouté à la requête lors de l 'authentification de l utilisateur du middleware auth
@@ -253,6 +278,12 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
  // *** fonction semantique de la logique routing router.delete("/:id"): supprimer une sauce spécifique
 
  exports.deleteSauce = ( req, res ) => {
+
+    if( !req.auth.userId){
+        console.log( "requête non signé, non athentifié")
+        throw "accès non autorisé"
+    } 
+    
     Sauce.findOne( {_id: req.params.id} )
     .then( sauce => {
         /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then
