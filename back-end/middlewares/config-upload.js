@@ -26,8 +26,8 @@ const storage = multer.diskStorage( {
         // pour eviter des problemes sur le serveur lors de l 'enregistrement de l'image:supression des espaces, des  caractères speciaux dans le nom du fichier telechargé par l utilisateur et sauvagrdé par multer
          let name= file.originalname.split(".").slice(0,-1).join();
          name = name.split(" ").join("_");// de cette chaine de caractere nous la retranformons en tableau et la scindons au niveau des espaces et la relions en une seule chaine de caractere avec les underscores
-         console.log("name", name)
-         name = name.replace(/[`~@#$&*()|+\-=?;'<>/]/gi, '')
+         console.log("name", name);
+         name = name.replace( /[`~@#$&*()|+\-=?;'<>/]/gi, '' );
          // apres la modification du nom d origine du fichier sans l extension nous pouvons ajouté au nom d'origine stockée dans name ,les millisecondes, et  lui ajouté l extension
      
         // création de l'extension: on recupere la propriété mimetype de l objet file de la requête et la valeur associée  dans le dictionnaire mimeType
@@ -39,4 +39,5 @@ const storage = multer.diskStorage( {
 
 // export du middleware multer avec l'objet de configuration storage qui stocke la const storage pour le rendre accessible aux routes crées pour les sauces,
 // et le nom du champs de type file enregistré dans le constructeur formData lors de la requête front-end dans la methode single() pour gérer qu un seul fichier image
-module.exports = multer({storage}).single( "image"); // multer({storage: storage}) equivalent à stocker la const storage dans l objet de configuration storage de multer
+module.exports = multer({storage}).single( "image"); 
+// multer({storage: storage}) equivalent à stocker la const storage dans l objet de configuration storage de multer

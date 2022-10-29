@@ -5,29 +5,9 @@ const fs = require( "fs" );
 
 //............................CREATION DES FONCTIONS SEMANTIQUES DU CONTROLLERS POUR LES OPÉRATIONS CRUD (logique metier de chaque routes individuelles dans l objet router pour les sauces) SUR LES ROUTES INDIVIDUELLES DANS ROUTES SAUCES.JS.............................
 
-// fonction pour supprimer les caractères spéciaux des entrées utilisateurs du formulaire add-sauce et modify-sauce et éviter les injections ou XSS
-function deleteChars(chars){
-    chars = chars.replace(/[`~@#$&*_|+\-=?;'<>/]/gi, '')
-    return chars;
-}
-
 // *** fonction sémantique de la logique routing router.post("/"): ajouter une sauce 
-
 exports.addSauce = ( req, res ) => {
     let objtSauce = req.body.sauce;
-   
-    // verifier que les données transmis par l utilisateur provient bien de la même personne authentifié et de la même demande requête auquel on a ajouté la propriété auth et l userId qui signe la requête
-    //pour eviter la modification des données d'un pirate et l injection de code arbitraire dans l application lors de la deserialisation des données utilisateur.
-    // on reverifie l authentification faite au préalable
-
-    //avant de deserialiser les données: on verifie si le userId ajouté lors de la verification du token est present sinon l utilisateur n est pas authentifié, ou la validité du token est depassé,
-    //et on verifie que l userId  ajouté dans le corps de la requête front-end est le même que l userId ajouté à la requête apres la verification du token 
-    // dans ces deux cas nous stoppons la fonction addSauce et ne parsons pas les données de l utilisateur
-    if( !req.auth.userId && objtSauce.userId !== req.auth.userId){
-        console.log( "requête non signé, non athentifié")
-        throw "accès non autorisé"
-    } 
-
     //on supprime les caractères spéciaux des entrées utilisateurs
      objtSauce = deleteChars( objtSauce );
 
@@ -43,8 +23,7 @@ exports.addSauce = ( req, res ) => {
     const sauce = new Sauce( {
         /*. on recupère et insérons dans le modèle, les données de la requete POST utilisateur,
          les données parsées de l objet body appelé sauce  qui est stocké dans objtSauce en une seule fois avec l opérateur spread "..."*/
-        ...objtSauce,
-
+        ...objtSauce,   
         /* on enregistre la sauce avec userId qui a été authentifié et ajouté à la propriété de cette requête précisement, 
         pour plus de sécurité au niveau des requêtes signées et securise l 'accés et sécurise les opérations CRUD sur les données de la base de données de l'API*/
         userId: req.auth.userId,
@@ -53,8 +32,8 @@ exports.addSauce = ( req, res ) => {
         imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`,
 
         // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Poste
-        likes:0,
-        dislikes:0,
+        likes: 0,
+        dislikes: 0,
         usersLiked: [],
         usersDisliked: []   
     } );
@@ -70,38 +49,52 @@ exports.addSauce = ( req, res ) => {
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
      // on ne montre pas tout le contenu de l erreur ni l application qui gere l erreur mais le message envoyé sans le modifier ( selon les consignes) bien qu il soit conseillé de le personnaliser selon l'OWASP
-        res.status( 400 ).json( {error: error.message} ) 
+        res.status( 400 ).json( {error} ) 
 
     // logging erreurs detaillés pour chaque champs 
-        logError(error.errors.name, error.errors.name.message)
-        logError(error.errors.manufacturer, error.errors.manufacturer.message)
-        logError(error.errors.description, error.errors.description.message)
-        logError(error.errors.mainPepper, error.errors.mainPepper.message)
-        logError(error.errors.userId, error.errors.userId.message)
-        logError(error.errors.imageUrl, error.errors.imageUrl.message)
-        logError(error.errors.likes, error.errors.likes.message)
-        logError(error.errors.dislikes, error.errors.dislikes.message)
-        logError(error.errors.usersLiked, error.errors.usersLiked.message)
-        logError(error.errors.usersDisliked, error.errors.usersDisliked.message)
+ 
+         logError();  
 
-        function logError( errorSauce, messageError ){
-            if( errorSauce ){
-                console.log( "erreur description", messageError )
-            }else{
-                console.log( " une erreur inconnue s est produite" )
-            }
+        function logError(){
+        
+            if(error.errors.name ) console.log( "erreur description",error.errors.name.message );
+            if(error.errors.manufacturer ) console.log( "erreur description",error.errors.manufacturer.message );
+            if(error.errors.description) console.log( "erreur description",error.errors.description.message );
+            if(error.errors.mainPepper ) console.log( "erreur description",error.errors.mainPepper.message );
+            if(error.errors.userId ) console.log( "erreur description",error.errors.userId.message );
+            if(error.errors.imageUrl ) console.log( "erreur description",error.errors.imageUrl.message );
+            if(error.errors.likes ) console.log( "erreur description",error.errors.likes.message );
+            if(error.errors.dislikes ) console.log( "erreur description",error.errors.dislikes.message );
+            if(error.errors.usersLiked ) console.log( "erreur description",error.errors.usersLiked.message );
+            if(error.errors.usersDisliked ) console.log( "erreur description",error.errors.usersDisliked.message );
+            if( ! error.errors.name 
+                && ! error.errors.manufacturer 
+                && ! error.errors.description 
+                && ! error.errors.mainPepper
+                && ! error.errors.userId 
+                && ! error.errors.imageUrl 
+                && ! error.errors.likes
+                && ! error.errors.dislikes
+                && ! error.errors.usersLiked
+                && ! error.errors.usersDisliked
+            ){
+                console.log( "une erreur inconnue s est produite" );
+            }           
         }
     } );  
-} 
+}
+
+
+// fonction pour supprimer les caractères spéciaux des entrées utilisateurs du formulaire add-sauce et modify-sauce et éviter les injections ou XSS
+function deleteChars(chars){
+    chars = chars.replace( /[`~@#$&*_|+\-=?;'<>/]/gi, '' );
+    return chars;
+}
 
 // *** fonction sémantique de la logique routing router.post("/:id/like"): liker, disliker une sauce specifique ou annuler un like ou dislike 
 
 exports.add_Remove_NoticeLike = ( req, res ) => {
-    // Reverification de l'authentification 
-    if( !req.auth.userId && req.body.userId !== req.auth.userId){
-        console.log( "requête non signé, non athentifié")
-        throw "accès non autorisé"
-    } 
+
     //par sécurité on supprime l userId ajouté par le requérant qui like et on ajoute dans le tableau usersLiked le userId ajouté à la requête signé (propriété auth de la requête req.auth) dans le middleware auth.js
         delete  req.body.userId;
         Sauce.findOne( {_id: req.params.id} )
@@ -210,11 +203,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   exports.modifySauce = ( req, res ) => {
     let saucePutObjt =
      req.file ? req.body.sauce : JSON.stringify(req.body);
-
-    if( !req.auth.userId && saucePutObjt.userId !== req.auth.userId){
-        console.log( "requête non signé, non athentifié")
-        throw "accès non autorisé"
-    } 
+ 
     // suppression des caractères speciaux des champs textuelles qui sont dans le body de la requete si le body n est pas envoyé avec leformat multipart/form-data soit dans l objet sauce ajouté par multer dans le body de la requête
      saucePutObjt = deleteChars( saucePutObjt ); 
     /* vérification de l objet body envoyé 
@@ -222,7 +211,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
     - si il est sous forme d'objet json sans fichier donc pas sous la forme form-data et donc non modifié par le middleware upload (multer)*/
     const sauceObjt = 
         req.file ? { ...JSON.parse( saucePutObjt ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
-        : {...JSON.parse(saucePutObjt)};
+        : {...JSON.parse( saucePutObjt )};
 
     /* par securité nous supprimons l userId ajouté dans la requête par l utilisateur 
     et recupererons l userId que nous avons ajouté à la requête lors de l 'authentification de l utilisateur du middleware auth
@@ -280,10 +269,10 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
  exports.deleteSauce = ( req, res ) => {
 
     if( !req.auth.userId){
-        console.log( "requête non signé, non athentifié")
-        throw "accès non autorisé"
+        console.log( "requête non signée" );
+        throw "accès non autorisé";
     } 
-    
+
     Sauce.findOne( {_id: req.params.id} )
     .then( sauce => {
         /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then

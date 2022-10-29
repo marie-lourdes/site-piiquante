@@ -46,7 +46,7 @@ exports.login = ( req, res ) => {
           
           // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
           // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
-          res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} )    
+          return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} )    
         }
       
         // après verification ci dessus de l'utilisateur avec son email et si l utilisateur existe avec l email indique dans le corps de la requête POST du formulaire de connexion
@@ -56,7 +56,7 @@ exports.login = ( req, res ) => {
         .then( valid => {
           // on recupere le resultat de la methode compare(), si c'est false , le bloc then execute le code suivant dans la structure conditionnelle
           if( !valid ){
-            res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
+             return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
             // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
             // nous précisons pas que l 'erreur vient du mot de passe , qui ne correspond pas à l'utilisateur avec l'email indiqué dans la requête de l utilisateur et trouvé  dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit        
           }
