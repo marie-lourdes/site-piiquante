@@ -28,12 +28,15 @@ const app = express();
 
 // import du module mongoose
 const mongoose = require( "mongoose" );
+const logger = require("./log/logger");
 
 // creation de la connexion avec authentification de l'application  express avec la base de données MongoDB Atlas
 // base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
 mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
-.then( () => console.log( 'Connexion à MongoDB réussie !' ) )
-.catch( () => console.log( 'Connexion à MongoDB échouée !' ) );
+.then( () => logger.info( 'Connexion à MongoDB réussie !' ) )
+.catch( () => logger.error( 'Connexion à MongoDB échouée !' ) );
+
+
 
 //..........................CONFIGURATION GÉNÉRALE POUR LES RESSOURCES IMAGES TELECHARGÉES PAR L UTILISATEUR ET SAUVEGARDÉ PAR MULTER:création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique.................
 //cette route est placé avant les middlewares helmet, ces derniers contiennent  des restrictions x-frame-options et empechant les requêtes imagesUrl, 
@@ -66,6 +69,7 @@ function corsConfiguration (){
   });
 
 }
+
 
 // ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
 

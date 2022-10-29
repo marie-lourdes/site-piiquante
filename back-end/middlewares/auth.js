@@ -2,6 +2,7 @@
 const jwt = require( "jsonwebtoken" );
 // import du package dotenv pour charger les variables d 'environnement 
 const dotenv = require( "dotenv" );
+const logger = require("../log/logger");
 dotenv.config();
 const TOKEN_ALGORITHM = process.env.TOKEN_REQUEST;
 
@@ -20,6 +21,7 @@ module.exports = (req, res, next) => {
      next();
     }catch( error ){
         res.status( 401 ).json( {error} );
+        logger.error( "erreur athentification" );
 
     }
 

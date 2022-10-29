@@ -1,4 +1,4 @@
-//................................CREATION DU SERVERU NODE AVEC EXPRESS......................................
+//...................................CREATION DU SERVEUR NODE AVEC EXPRESS......................................
 
 // création du serveur avec le module http et  le module app.js qui exécute l ' application express, il n'est pas possible d implémenter le protocol https car est incompatible avec le portocol de localhost.
 const http = require( "http" );
@@ -7,11 +7,13 @@ const app = require( "./app" );
 /*recupération du module dotenv pour charger la variable d'environnement PORT defini dans le fichier .env
 pour eviter les changements d adresse ip et de port, le port ne prendra pas la valeur du port par defaut du systeme d exploitation qui est aleatoire et qui peut changer,
  on a redefini cette valeur par defaut de cette variable d environnemnt PORT du systeme d exploitation window en la specifiant et en chargeant cette variable d environnement avec dotenv */
-
-
+ const dotenv = require( "dotenv" );
+ dotenv.config();
 // redefinition du port par defaut du systeme d exploitation recupéré dans la variable MY_PORT
 const MY_PORT = process.env.PORT;
+//..........................................LOGGING SERVEUR.....................................................
 
+const logger = require("./log/logger");
 // .................................GESTION DES ERREURS SERVEUR...............................................
 
 //gestion des erreurs du serveur et des appels du systeme avec la fonction errorHandler
@@ -35,14 +37,14 @@ const errorHandler = error => {
       //, switch verifie la valeur retourné de code avec diffrent code erreur ci dessous
       case 'EACCES':
    // une tentative d'accès à un fichier d'une manière interdite par ses autorisations d'accès au fichier a été effectuée.
-        console.error( bind + ' autorisation refusée.' );
+        logger.error( bind + ' autorisation refusée.' );
         process.exit( 1 ); //le code 1 force l echec du process, le code 0 : code succes par defaut 
       //  mieux vaut definir en amont avec process.exitCode= "le code", le code de sortie du process a definir lorsque le process node se termine normalement, node peut au moins terminer sa boucle d evenement sans forcer l/ echec
         break;
   
       case 'EADDRINUSE':
       // Une tentative de liaison d'un serveur ( net, http, ou https) à une adresse locale a échoué car un autre serveur sur le système local occupait déjà cette adresse.
-        console.error( bind + ' adresse déjà utilisée.');
+        logger.error( bind + ' adresse déjà utilisée.');
         process.exit( 1 );
         break;
         
@@ -53,14 +55,20 @@ const errorHandler = error => {
     }
   };
 
+  logger.error("error");
+logger.info("info");
+
 //creation du serveur avec le module http et en appelant les fonctions et methodes du module apps.js
 const server = http.createServer( app );
+
+
+
 
 // création des logging basiques pour les evenements erreur et les évenements d'écoute du serveur sur le port
 server.on('error', errorHandler); // ici l ecouteur d evenment ecoute les evenement erreur qui se produit sur le server)
 server.on('listening', () => { // ecoute les evenement nomme listening qui se produit sur server
   const bind = 'port ' + MY_PORT;
-  console.log('Listening on ' + bind);
+  logger.info('Listening on ' + bind);
 });
 
 //...................................ECOUTE DU SERVEUR SUR LA VARIABLE D ENVIRONNEMENT PORT.........................................

@@ -3,10 +3,13 @@ const Sauce = require( "../models/Sauces" );
 //import du module native de node appelé fs
 const fs = require( "fs" );
 
+const logger = require("../log/logger");
+
 //............................CREATION DES FONCTIONS SEMANTIQUES DU CONTROLLERS POUR LES OPÉRATIONS CRUD (logique metier de chaque routes individuelles dans l objet router pour les sauces) SUR LES ROUTES INDIVIDUELLES DANS ROUTES SAUCES.JS.............................
 
 // *** fonction sémantique de la logique routing router.post("/"): ajouter une sauce 
 exports.addSauce = ( req, res ) => {
+    logger.info( "provenance des requêtes:" + " " + "ip"+req.ip +" " + req.auth.userId + " " + req.method +" " + req.originalUrl)
     let objtSauce = req.body.sauce;
     //on supprime les caractères spéciaux des entrées utilisateurs
      objtSauce = deleteChars( objtSauce );
@@ -94,6 +97,7 @@ function deleteChars(chars){
 // *** fonction sémantique de la logique routing router.post("/:id/like"): liker, disliker une sauce specifique ou annuler un like ou dislike 
 
 exports.add_Remove_NoticeLike = ( req, res ) => {
+    logger.info( "provenance des requêtes:" + " " + "ip"+req.ip +" " + req.auth.userId + " " + req.method +" " + req.originalUrl)
 
     //par sécurité on supprime l userId ajouté par le requérant qui like et on ajoute dans le tableau usersLiked le userId ajouté à la requête signé (propriété auth de la requête req.auth) dans le middleware auth.js
         delete  req.body.userId;
@@ -201,6 +205,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
 
   exports.modifySauce = ( req, res ) => {
+    logger.info( "provenance des requêtes:" + " " + "ip"+req.ip +" " + req.auth.userId + " " + req.method +" " + req.originalUrl)
     let saucePutObjt =
      req.file ? req.body.sauce : JSON.stringify(req.body);
  
@@ -267,12 +272,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
  // *** fonction semantique de la logique routing router.delete("/:id"): supprimer une sauce spécifique
 
  exports.deleteSauce = ( req, res ) => {
-
-    if( !req.auth.userId){
-        console.log( "requête non signée" );
-        throw "accès non autorisé";
-    } 
-
+    logger.info( "provenance des requêtes:" + " " + "ip"+req.ip +" " + req.auth.userId + " " + req.method +" " + req.originalUrl)
     Sauce.findOne( {_id: req.params.id} )
     .then( sauce => {
         /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then
@@ -305,7 +305,8 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
  // *** fonction semantique de la logique routing router.get("/:id"): recuperer une sauce specifique pour que le front-end l affiche dans la page sauce
 
  exports.get_DisplayOneSauce = ( req, res ) => {
-    // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete GET front-end pour afficher dans le DOM la sauce
+    logger.info( "provenance des requêtes:" + " " + "ip"+req.ip +" " + req.auth.userId + " " + req.method +" " + req.originalUrl)
+     // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete GET front-end pour afficher dans le DOM la sauce
     Sauce.findOne( {_id: req.params.id})// nous associons l element id de l endpoint à la requête qui recupere la valeur du parametre de recherche de la requête du front end avec le même element id de l'endpoint
     .then(sauce => res.status( 200 ).json( sauce ) )//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoDB findOne() 
     .catch( error => res.status( 404 ).json( {error} ) );// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
@@ -317,4 +318,9 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
     .then( sauces => res.status( 200 ).json( sauces ) )// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
     .catch( error => res.status( 404 ).json( {error} ) );// catch recupere l erreur generé sur la promesse envoyé par then  
 }
+
+
+   
+
+
 
