@@ -149,10 +149,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     res.status( 201 ).json( {message: "sauce liké"} );
                     console.log( "sauce liké", sauce );
                 } )
-                .catch( error => {
-                    res.status( 400 ).json( {error} )
-                    console.log( "erreur requête liker", error.message )
-                } );     
+                .catch( error => res.status( 400 ).json( {error} ) );     
             }
     
             function disliker(){

@@ -20,7 +20,7 @@ const logger = require("./log/logger");
 
 const errorHandler = error => {
     if ( error.syscall !== 'listen' ) {// les erreurs de sytems ont des nom, systemcall renvoit une chaine de caractere avec le nom de l erreur de l appel du system
-     
+      logger.info( "Error: erreur systeme")
       throw error; //stoppe le programme et fournit la valeur de l exception  stocker ds "error" 
     }
    
@@ -37,26 +37,24 @@ const errorHandler = error => {
       //, switch verifie la valeur retourné de code avec diffrent code erreur ci dessous
       case 'EACCES':
    // une tentative d'accès à un fichier d'une manière interdite par ses autorisations d'accès au fichier a été effectuée.
-        logger.error( bind + ' autorisation refusée.' );
+        logger.info( 'Error:' + " " + bind + ' autorisation refusée.' );
         process.exit( 1 ); //le code 1 force l echec du process, le code 0 : code succes par defaut 
       //  mieux vaut definir en amont avec process.exitCode= "le code", le code de sortie du process a definir lorsque le process node se termine normalement, node peut au moins terminer sa boucle d evenement sans forcer l/ echec
         break;
   
       case 'EADDRINUSE':
       // Une tentative de liaison d'un serveur ( net, http, ou https) à une adresse locale a échoué car un autre serveur sur le système local occupait déjà cette adresse.
-        logger.error( bind + ' adresse déjà utilisée.');
+        logger.info( 'Error:' + " "+ bind + ' adresse déjà utilisée.');
         process.exit( 1 );
         break;
         
      /*  default definit le block de code par defaut qui sera execute 
      si l instruction switch ne trouve auucne correspondance de valeurs(dans les case) avec la valeur de error.code*/
       default: 
+        logger.info( "Error: erreur systeme")
         throw error;
     }
   };
-
-  logger.error("error");
-logger.info("info");
 
 //creation du serveur avec le module http et en appelant les fonctions et methodes du module apps.js
 const server = http.createServer( app );

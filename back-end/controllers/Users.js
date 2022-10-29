@@ -56,6 +56,7 @@ exports.login = ( req, res ) => {
           // on recupere le resultat de la methode compare(), si c'est false , le bloc then execute le code suivant dans la structure conditionnelle
           if( !valid ){
              return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
+             
             // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
             // nous précisons pas que l 'erreur vient du mot de passe , qui ne correspond pas à l'utilisateur avec l'email indiqué dans la requête de l utilisateur et trouvé  dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit        
           }
@@ -70,7 +71,10 @@ exports.login = ( req, res ) => {
             )          
           } );       
         } )
-        .catch( error => res.status( 500 ).json( {error} ) );
+        .catch( error => {
+          res.status( 500 ).json( {error} )
+          
+        } );
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
     })
     .catch( error => res.status( 500 ).json( {error} ) );

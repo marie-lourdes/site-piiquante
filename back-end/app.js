@@ -34,7 +34,7 @@ const logger = require("./log/logger");
 // base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
 mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
 .then( () => logger.info( 'Connexion à MongoDB réussie !' ) )
-.catch( () => logger.error( 'Connexion à MongoDB échouée !' ) );
+.catch( () => logger.info( 'Error: Connexion à MongoDB échouée !' ) );
 
 
 
@@ -76,8 +76,6 @@ function corsConfiguration (){
 
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
-
-
 
 //création de la route de base pour les sauces
 app.use( "/api/sauces", routerSauces );

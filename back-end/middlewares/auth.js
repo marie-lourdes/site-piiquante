@@ -10,7 +10,6 @@ const TOKEN_ALGORITHM = process.env.TOKEN_REQUEST;
 module.exports = (req, res, next) => {
     try{
         const token = req.headers.authorization.split( " " )[1];
-        console.log( "token", token);
         const tokenDecoded = jwt.verify( token, TOKEN_ALGORITHM );
         const userId = tokenDecoded.userId;
 
@@ -21,7 +20,6 @@ module.exports = (req, res, next) => {
      next();
     }catch( error ){
         res.status( 401 ).json( {error} );
-        logger.error( "erreur athentification" );
 
     }
 

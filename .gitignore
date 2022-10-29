@@ -3,6 +3,9 @@
 .env
 # Dossier images
 images
+# Log
+log
+info.log
 # Compiled output
 /dist
 /tmp
