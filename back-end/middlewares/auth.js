@@ -9,7 +9,7 @@ dotenv.config();
 const TOKEN_ALGORITHM = process.env.TOKEN_REQUEST;
 
 // On exporte le module d'authentification de la requête pour verifier le token lors d une opérations CRUD sur les endpoint des ressources sauces
-module.exports = (req, res, next) =>        
+module.exports = (req, res, next) => {      
     try{
         const token = req.headers.authorization.split( " " )[1];
         const tokenDecoded = jwt.verify( token, TOKEN_ALGORITHM );

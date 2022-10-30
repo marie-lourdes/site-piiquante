@@ -9,6 +9,8 @@ const DB = process.env.URI_DB;
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
 
+const rateLimit = require("./middlewares/rateLimit")
+
 // import du module helmet
 const helmet = require( "helmet" );
 
@@ -41,6 +43,8 @@ mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
 //..........................CONFIGURATION GÉNÉRALE POUR LES RESSOURCES IMAGES TELECHARGÉES PAR L UTILISATEUR ET SAUVEGARDÉ PAR MULTER:création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique.................
 //cette route est placé avant les middlewares helmet, ces derniers contiennent  des restrictions x-frame-options et empechant les requêtes imagesUrl, 
 app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
+
+
 
 // ............................SECURISATION GENERALE DES REQUETES HTTP CONTRE LES ATTAQUES CSRF - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................
 
