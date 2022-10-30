@@ -80,5 +80,7 @@ app.use( "/api/auth", routerUsers );
 //création de la route de base pour les sauces
 app.use( "/api/sauces", routerSauces );
 
+
+
 // exporte la valeur actuelle de l objet exports du module app.js pour le rendre accessible hors de ce module, notamment au fichier server.js, pour que le serveur node s execute avec express et les fonctionnalités de l application express
 module.exports = app;

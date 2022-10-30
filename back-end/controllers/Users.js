@@ -42,7 +42,8 @@ exports.login = ( req, res ) => {
     User.findOne( {email: req.body.email} )
     .then( user => { //recuperation de l utilisateur ayant l email avec la valeur entré par l utilisateur lors de la requête
         if( !user ){ // verification du resultat  envoyé  dans la promesse de findOne() si la valeur vaut false , c'est qu il n y a aucune correspondance avec un utilisateur enregistré dans la base de donné ayant l email entré lors de la requete POST du front-end lors de la validation du formulaire de connexion
-          
+          //log en cas de force brute
+          logger.info( "Erreur connexion:" + " " + "ip" + req.ip + " " + req.method +" " + req.originalUrl)
           // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
           // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
           return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} )    
@@ -55,7 +56,9 @@ exports.login = ( req, res ) => {
         .then( valid => {
           // on recupere le resultat de la methode compare(), si c'est false , le bloc then execute le code suivant dans la structure conditionnelle
           if( !valid ){
-             return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
+            //log en cas de force brute
+            logger.info( "Erreur connexion:" + " " + "ip" + req.ip + " " + req.method +" " + req.originalUrl)
+            return res.status( 401 ).json( {message: "adresse e-mail/mot de passe incorrecte"} ) 
              
             // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
             // nous précisons pas que l 'erreur vient du mot de passe , qui ne correspond pas à l'utilisateur avec l'email indiqué dans la requête de l utilisateur et trouvé  dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit        
