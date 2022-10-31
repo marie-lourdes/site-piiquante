@@ -39,13 +39,14 @@ const errorHandler = error => {
    // une tentative d'accès à un fichier d'une manière interdite par ses autorisations d'accès au fichier a été effectuée.
         logger.info( 'Error:' + " " + bind + ' autorisation refusée.' );
         //le code 1 force l echec du process, le code 0 : code succes par defaut 
+        process.exit(1);
       //  mieux vaut definir en amont avec process.exitCode= "le code", le code de sortie du process a definir lorsque le process node se termine normalement, node peut au moins terminer sa boucle d evenement sans forcer l/ echec
         break;
   
       case 'EADDRINUSE':
       // Une tentative de liaison d'un serveur ( net, http, ou https) à une adresse locale a échoué car un autre serveur sur le système local occupait déjà cette adresse.
         logger.info( 'Error:' + " "+ bind + ' adresse déjà utilisée.');
-      
+        process.exit(1);
         break;
         
      /*  default definit le block de code par defaut qui sera execute 
