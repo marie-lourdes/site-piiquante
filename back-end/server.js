@@ -60,9 +60,6 @@ const errorHandler = error => {
 //creation du serveur avec le module http et en appelant les fonctions et methodes du module apps.js
 const server = http.createServer( app );
 
-
-
-
 // création des logging basiques pour les evenements erreur et les évenements d'écoute du serveur sur le port
 server.on('error', errorHandler); // ici l ecouteur d evenment ecoute les evenement erreur qui se produit sur le server)
 server.on('listening', () => { // ecoute les evenement nomme listening qui se produit sur server

@@ -34,8 +34,7 @@ exports.addSauce = ( req, res ) => {
         // ecriture de l 'url de l image téléchargé par l utilisateur lors de l 'ajout de l image à l 'aide des propriétés de l objet file ajouté par multer et les propriété de l 'objet request
         imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`,
 
-        // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Poste
-        name:"",
+        // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Post
         likes: 0,
         dislikes: 0,
         usersLiked: [],
