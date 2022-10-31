@@ -34,7 +34,7 @@ exports.addSauce = ( req, res ) => {
         // ecriture de l 'url de l image téléchargé par l utilisateur lors de l 'ajout de l image à l 'aide des propriétés de l objet file ajouté par multer et les propriété de l 'objet request
         imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`,
 
-        // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Poste
+        // on initialise à zero les propriétés likes dislikes, creons des tableaux vides pour les utilisateurs qui ont aimé ou non cette sauce crée par la requete Post
         likes: 0,
         dislikes: 0,
         usersLiked: [],
@@ -52,7 +52,7 @@ exports.addSauce = ( req, res ) => {
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
      // on ne montre pas tout le contenu de l erreur ni l application qui gere l erreur mais le message envoyé sans le modifier ( selon les consignes) bien qu il soit conseillé de le personnaliser selon l'OWASP
-        res.status( 400 ).json( {error} ) 
+    res.status( 400 ).json( {error: error.message} )
 
     // logging erreurs detaillés pour chaque champs 
  
@@ -60,16 +60,17 @@ exports.addSauce = ( req, res ) => {
 
         function logError(){
         
-            if(error.errors.name ) console.log( "erreur description",error.errors.name.message );
-            if(error.errors.manufacturer ) console.log( "erreur description",error.errors.manufacturer.message );
+            if(error.errors.name ) console.log( "erreur title",error.errors.name.message );
+            if(error.errors.manufacturer ) console.log( "erreur manufact",error.errors.manufacturer.message );
             if(error.errors.description) console.log( "erreur description",error.errors.description.message );
-            if(error.errors.mainPepper ) console.log( "erreur description",error.errors.mainPepper.message );
-            if(error.errors.userId ) console.log( "erreur description",error.errors.userId.message );
-            if(error.errors.imageUrl ) console.log( "erreur description",error.errors.imageUrl.message );
-            if(error.errors.likes ) console.log( "erreur description",error.errors.likes.message );
-            if(error.errors.dislikes ) console.log( "erreur description",error.errors.dislikes.message );
-            if(error.errors.usersLiked ) console.log( "erreur description",error.errors.usersLiked.message );
-            if(error.errors.usersDisliked ) console.log( "erreur description",error.errors.usersDisliked.message );
+            if(error.errors.mainPepper ) console.log( "erreur pepper",error.errors.mainPepper.message );
+            if(error.errors.heat ) console.log( "erreur heat",error.errors.heat.message );
+            if(error.errors.userId ) console.log( "erreur usr",error.errors.userId.message );
+            if(error.errors.imageUrl ) console.log( "erreur image ",error.errors.imageUrl.message );
+            if(error.errors.likes ) console.log( "erreur like",error.errors.likes.message );
+            if(error.errors.dislikes ) console.log( "erreur dislike",error.errors.dislikes.message );
+            if(error.errors.usersLiked ) console.log( "erreur  user like",error.errors.usersLiked.message );
+            if(error.errors.usersDisliked ) console.log( "erreur user no like",error.errors.usersDisliked.message );
             if( ! error.errors.name 
                 && ! error.errors.manufacturer 
                 && ! error.errors.description 
@@ -259,7 +260,10 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
             // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
           Sauce.updateOne( {_id: req.params.id}, {...sauceObjt, _id: req.params.id} )
           .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
-          .catch( error => res.status( 400 ).json( {error} ) );// envoie du code htpp 400 qui signale une erreur coté client
+          .catch( error => {
+            res.status( 400 ).json( {error} )
+            logger.error(" erreur requete modification")
+           } );// envoie du code htpp 400 qui signale une erreur coté client
         }
     } )
     .catch( error => res.status( 500 ).json( {error} ) ); 

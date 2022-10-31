@@ -9,10 +9,12 @@ const DB = process.env.URI_DB;
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
 
-const rateLimit = require("./middlewares/rateLimit")
+const rateLimit = require( "./middlewares/rateLimit" );
 
 // import du module helmet
 const helmet = require( "helmet" );
+
+
 
 // import du package path pour normaliser le chemin d'acces au dossier images du serveur back end
 const path = require( "path" );
@@ -26,6 +28,7 @@ const routerSauces = require( "./routes/Sauces" );
 //on execute l application express via sa methode express() accessible grace au module express importé
 const app = express();
 
+
 //...........................CREATION DE LA CONNEXION DE L'APPLICATION EXPRESS AVEC LA BASE DE DONNEES MONGOBD ATLAS AVEC LE MODULE MONGOOSE..........................
 
 // import du module mongoose
@@ -36,15 +39,13 @@ const logger = require("./log/logger");
 // base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
 mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
 .then( () => logger.info( 'Connexion à MongoDB réussie !' ) )
-.catch( () => logger.info( 'Error: Connexion à MongoDB échouée !' ) );
+.catch( () => logger.error( 'Error: Connexion à MongoDB échouée !' ) );
 
 
 
 //..........................CONFIGURATION GÉNÉRALE POUR LES RESSOURCES IMAGES TELECHARGÉES PAR L UTILISATEUR ET SAUVEGARDÉ PAR MULTER:création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique.................
 //cette route est placé avant les middlewares helmet, ces derniers contiennent  des restrictions x-frame-options et empechant les requêtes imagesUrl, 
 app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
-
-
 
 // ............................SECURISATION GENERALE DES REQUETES HTTP CONTRE LES ATTAQUES CSRF - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................
 

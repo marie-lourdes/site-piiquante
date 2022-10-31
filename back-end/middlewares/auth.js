@@ -22,6 +22,6 @@ module.exports = (req, res, next) => {
     }catch( error ){
         res.status( 401 ).json( {error} );
         //log erreur d authentification
-        logger.info( "Erreur authentification:" + " " + "ip" + req.ip + " " + " " + req.method +" " + req.originalUrl);
+        logger.error( "Erreur authentification:" + " " + "ip" + req.ip + " " + " " + req.method +" " + req.originalUrl);
     }
 };
