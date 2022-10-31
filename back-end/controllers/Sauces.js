@@ -52,7 +52,7 @@ exports.addSauce = ( req, res ) => {
     // dans le bloc then nous récupérons le résultat de la promesse  envoyé par save() et modifions le status de la réponse à la requête avec le code de reussite  http 201 created que nous envoyons au front-end avec message en json
     // catch recupère l erreur generé par la promesse envoyé par then et envoit l erreur coté client avec le code http 400  au front-end
      // on ne montre pas tout le contenu de l erreur ni l application qui gere l erreur mais le message envoyé sans le modifier ( selon les consignes) bien qu il soit conseillé de le personnaliser selon l'OWASP
-        res.status( 400 ).json( {error} ) 
+    res.status( 400 ).json( {error: error.message} ) 
 
     // logging erreurs detaillés pour chaque champs 
  
@@ -60,16 +60,17 @@ exports.addSauce = ( req, res ) => {
 
         function logError(){
         
-            if(error.errors.name ) console.log( "erreur description",error.errors.name.message );
-            if(error.errors.manufacturer ) console.log( "erreur description",error.errors.manufacturer.message );
+            if(error.errors.name ) console.log( "erreur title",error.errors.name.message );
+            if(error.errors.manufacturer ) console.log( "erreur manufact",error.errors.manufacturer.message );
             if(error.errors.description) console.log( "erreur description",error.errors.description.message );
-            if(error.errors.mainPepper ) console.log( "erreur description",error.errors.mainPepper.message );
-            if(error.errors.userId ) console.log( "erreur description",error.errors.userId.message );
-            if(error.errors.imageUrl ) console.log( "erreur description",error.errors.imageUrl.message );
-            if(error.errors.likes ) console.log( "erreur description",error.errors.likes.message );
-            if(error.errors.dislikes ) console.log( "erreur description",error.errors.dislikes.message );
-            if(error.errors.usersLiked ) console.log( "erreur description",error.errors.usersLiked.message );
-            if(error.errors.usersDisliked ) console.log( "erreur description",error.errors.usersDisliked.message );
+            if(error.errors.mainPepper ) console.log( "erreur pepper",error.errors.mainPepper.message );
+            if(error.errors.heat ) console.log( "erreur heat",error.errors.heat.message );
+            if(error.errors.userId ) console.log( "erreur usr",error.errors.userId.message );
+            if(error.errors.imageUrl ) console.log( "erreur image ",error.errors.imageUrl.message );
+            if(error.errors.likes ) console.log( "erreur like",error.errors.likes.message );
+            if(error.errors.dislikes ) console.log( "erreur dislike",error.errors.dislikes.message );
+            if(error.errors.usersLiked ) console.log( "erreur  user like",error.errors.usersLiked.message );
+            if(error.errors.usersDisliked ) console.log( "erreur user no like",error.errors.usersDisliked.message );
             if( ! error.errors.name 
                 && ! error.errors.manufacturer 
                 && ! error.errors.description 
