@@ -39,7 +39,7 @@ const logger = require("./log/logger");
 // base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
 mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
 .then( () => logger.info( 'Connexion à MongoDB réussie !' ) )
-.catch( () => logger.info( 'Error: Connexion à MongoDB échouée !' ) );
+.catch( () => logger.error( 'Error: Connexion à MongoDB échouée !' ) );
 
 
 

@@ -20,7 +20,7 @@ const logger = require("./log/logger");
 
 const errorHandler = error => {
     if ( error.syscall !== 'listen' ) {// les erreurs de sytems ont des nom, systemcall renvoit une chaine de caractere avec le nom de l erreur de l appel du system
-      logger.info( "Error: erreur systeme")
+      logger.error( "erreur systeme")
       throw error; //stoppe le programme et fournit la valeur de l exception  stocker ds "error" 
     }
    
@@ -45,14 +45,14 @@ const errorHandler = error => {
   
       case 'EADDRINUSE':
       // Une tentative de liaison d'un serveur ( net, http, ou https) à une adresse locale a échoué car un autre serveur sur le système local occupait déjà cette adresse.
-        logger.info( 'Error:' + " "+ bind + ' adresse déjà utilisée.');
+        logger.error( bind + ' adresse déjà utilisée.' );
         process.exit(1);
         break;
         
      /*  default definit le block de code par defaut qui sera execute 
      si l instruction switch ne trouve auucne correspondance de valeurs(dans les case) avec la valeur de error.code*/
       default: 
-        logger.info( "Error: erreur systeme")
+        logger.error( "erreur systeme" )
         throw error;
     }
   };
