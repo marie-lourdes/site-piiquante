@@ -11,11 +11,10 @@ const CLIENT = process.env.CLIENT_REQUEST;
 
 // On exporte le module d'authentification de la requête pour verifier le token lors d une opérations CRUD sur les endpoint des ressources sauces
 module.exports = (req, res, next) => {  
-    // verification de la page  du client provenant du site avant de decoder le token
-    if( req.referer !== CLIENT ){
-        logger.error( "requête inconnu" + " " + "ip" + req.ip + " " + " " + req.method +" " + req.originalUrl );
+    // verification de la page precedente qui a mené l utilisateur à la page courante (avec la requête du lien de la page précedente (page de connexion) ), page provenant du site avant de decoder le token si ce n est pas le cas on arrte la fonction d'authentification et les middlewares suivant qui traitent les requêtes sur chaque routes.
+    if( req.headers.referer !== CLIENT ){
+        logger.error( "requête inconnu" + " " + "ip" + req.ip + " " + " " + req.method + " " + req.originalUrl );
         throw "requête interdite"
-
     } 
     try{
         const token = req.headers.authorization.split( " " )[1];

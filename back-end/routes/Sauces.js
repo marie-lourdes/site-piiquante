@@ -33,7 +33,5 @@ router.get( "/:id",rateLimit.rateLimiter, auth, saucesCtrler.get_DisplayOneSauce
 // ***création de la route individuelle GET et sa fonction "get_DisplayAllSauces" (pour la page all sauce: requêter toutes les sauces  et  envoyer les données de toutes les sauces au front-end)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 router.get( "/", rateLimit.rateLimiter, auth, saucesCtrler.get_DisplayAllSauces );
 
-
-
 // on exporte le module router pour le rendre accessible à l 'application dans app.js et ajouter les routes individuelles du module à la route de base dans app.js
 module.exports = router;
