@@ -14,6 +14,8 @@ const rateLimit = require( "./middlewares/rateLimit" );
 // import du module helmet
 const helmet = require( "helmet" );
 
+// import middleware nocache
+const noCache = require( "nocache")
 
 
 // import du package path pour normaliser le chemin d'acces au dossier images du serveur back end
@@ -50,6 +52,8 @@ app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
 // ............................SECURISATION GENERALE DES REQUETES HTTP CONTRE LES ATTAQUES CSRF - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................
 
 app.use( helmet() );
+// import du middleware express nocache
+app.use( noCache())
 
 //........................CONFIGURATION GENERALE DES REQUETES ENTRANTES ET DE L'OBJET REQUEST DONT LE BODY EST INDIQUÉ  AU FORMAT JSON DANS LE HEADER DE LA REQUETE...................
 
