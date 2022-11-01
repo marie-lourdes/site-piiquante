@@ -1,4 +1,4 @@
-//import du module express rate limit pour eviter les attaques de deny de services et les technique de force brute pour les tentative de connexions qui sollicite trop le serveurs par les requêtes et peut représenter un danger pour les utlisateurs et l application
+//import du middleware express rate limit pour eviter les attaques de deny de services et les technique de force brute pour les tentative de connexions qui sollicite trop le serveurs par les requêtes et peut représenter un danger pour les utlisateurs et l application
 const rateLimit = require("express-rate-limit")
 
 // creation d un limitateur de requête pour la route /login, au bout de 3 requete de connexion, le middleware reconnait l ip et stoppe la requête post sur la route /login et attendre moins de 10 min pour retenter une connexion
