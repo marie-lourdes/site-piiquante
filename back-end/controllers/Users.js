@@ -4,7 +4,7 @@ const User = require("../models/Users" );
 // import du package bcrypt pour crypter le mot de passe crée de l utilisateur lors de son inscription dans la fonction controllers signup
 const bcrypt = require( "bcrypt" );
 
-//import du package jsonwebtoken pour crypter le token dans la reponse envoyé sur la route "/login"
+// import du package jsonwebtoken pour crypter le token dans la reponse envoyé sur la route "/login"
 const jwt = require( "jsonwebtoken" );
 
 // import du package dotenv pour charger les variables d 'environnement crée dans le fichier .env
@@ -25,8 +25,8 @@ const logger = require( "../log/logger" );
     // on recupère le resultat de la promesse de la méthode hash() qui est le mot de passe crypté pour l enregistrer dans l instance du modèle User
     // creation de l instance du modèle User et on apelle avec "new" le constructeur model() du module Users.js contenu dans la variable User ci dessus
         const user = new User( {
-        //le modèle copie la structure de donnée de userShema avec les données insérées ci dessous à l intérieur du modèle
-           // email: req.body.email, // recupération de l 'email crée et saisi dans le formulaire
+        // le modèle copie la structure de donnée de userShema avec les données insérées ci dessous à l intérieur du modèle
+        // recupération de l 'email crée et saisi dans le formulaire
             email: req.body.email,
             password: hash
         } );
@@ -44,7 +44,7 @@ const logger = require( "../log/logger" );
 exports.login = ( req, res ) => {
     // recherche de l utilisateur enregistré dans la collection users de la base de donnée avec l 'email qui contient l email entré dans le formulaire de connexion par l 'utilisateur qui se connecte
     User.findOne( { email: req.body.email } )
-    .then( user => { //recuperation de l utilisateur ayant l email avec la valeur entré par l utilisateur lors de la requête
+    .then( user => { // recuperation de l utilisateur ayant l email avec la valeur entré par l utilisateur lors de la requête
         if( !user ){ // verification du resultat  envoyé  dans la promesse de findOne() si la valeur vaut false , c'est qu il n y a aucune correspondance avec un utilisateur enregistré dans la base de donné ayant l email entré lors de la requete POST du front-end lors de la validation du formulaire de connexion
           //log en cas de force brute
           logger.error( "erreur connexion:" + " " + "ip" + req.ip + " " + req.method + " " + req.originalUrl );
@@ -72,7 +72,7 @@ exports.login = ( req, res ) => {
             token:jwt.sign( 
               // on s 'assure de crypter avec sign() le token de l utilisateur avec l'id  de l utilisateur qui a été recherché et verifié avec l email et le mot entré par l'utilisateur via la requête Post du formaulaire de connexion
               { userId: user._id },
-              TOKEN,// algorithme de cryptage du "token" ("chaine secrète de développement temporaire" ) securisé dans un fichier isole du code de l application
+              TOKEN, // algorithme de cryptage du "token" ("chaine secrète de développement temporaire" ) securisé dans un fichier isole du code de l application
               { expiresIn: "1h" }
             )          
           } );       
@@ -84,7 +84,7 @@ exports.login = ( req, res ) => {
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
     })
     .catch( error => res.status( 500 ).json( { error } ) );
-  //catch recupere l erreur genéré par la methode findOne() de mongoose quand le serveur(plus précisement l'api qui gere les requetes serveur) ne trouvera pas l'utilisateur dans la base de données 
+  // catch recupere l erreur genéré par la methode findOne() de mongoose quand le serveur(plus précisement l'api qui gere les requetes serveur) ne trouvera pas l'utilisateur dans la base de données 
 };
 
 
