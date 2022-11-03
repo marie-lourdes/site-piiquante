@@ -70,3 +70,4 @@ server.on('listening', () => { // ecoute les evenement nomme listening qui se pr
 //...................................ECOUTE DU SERVEUR SUR LA VARIABLE D ENVIRONNEMENT PORT.........................................
 //le serveur attend les requete sur ce port et ecoute sur port, requete qui sera traité par l aplication express qui est appélé dans le module app.js
 server.listen( MY_PORT );
+

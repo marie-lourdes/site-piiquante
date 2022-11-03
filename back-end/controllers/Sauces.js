@@ -203,7 +203,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
 
   exports.modifySauce = ( req, res ) => {
-    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method +" " + req.originalUrl)
+    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method + " " + req.originalUrl)
     let saucePutObjt =
      req.file ? req.body.sauce : JSON.stringify(req.body);
  

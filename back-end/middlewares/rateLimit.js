@@ -3,7 +3,7 @@ const rateLimit = require("express-rate-limit")
 
 // creation d un limitateur de requête pour la route /login, au bout de 3 requete de connexion, le middleware reconnait l ip et stoppe la requête post sur la route /login et attendre moins de 10 min pour retenter une connexion
 // c'est une methode pour limiter les attaques de deny de service qui peut saturer le serveur s il recoit trop de requête dans un interval de temps trop court
-exports.rateLimiterConnexion = rateLimit ( { windowMs : 5 * 60 * 1000 , // 5min en millisecondes 
+exports.rateLimiterConnexion = rateLimit ( { windowMs : 10 * 60 * 1000 , // 5min en millisecondes 
 max : 3, message : 'Nombreuses tentatives de connexion  , veuillez essayer ulterieurement' , standardHeaders : true , legacyHeaders : false} );
 //creation d un limitateur de requête pour les routes des sauces
 exports.rateLimiter = rateLimit ( { windowMs : 15 * 60 * 1000 , //15 min en millisecondes

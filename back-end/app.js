@@ -52,6 +52,8 @@ app.use( "/images", express.static( path.join( __dirname, "images" ) ) );
 // ............................SECURISATION GENERALE DES REQUETES HTTP CONTRE LES ATTAQUES CSRF - CONNEXION SECURISÉE AU SERVEUR - SECURISATION CONTRE LES INJECTIONS ET XSS.............................
 
 app.use( helmet() );
+
+//.............................SECURISATION DES DONNEES EN TRANSIT AVEC NO CACHE..................................................
 // import du middleware express nocache
 app.use( noCache())
 
@@ -88,6 +90,8 @@ app.use( "/api/auth", routerUsers );
 
 //création de la route de base pour les sauces
 app.use( "/api/sauces", routerSauces );
+
+
 
 
 
