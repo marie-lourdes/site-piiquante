@@ -1,7 +1,0 @@
-
-{"level":"info","message":"Listening on port 3000","service":"api-hot-takes","timestamp":"2022-11-03T12:04:41.604Z"}
-{"level":"info","message":"Connexion à MongoDB réussie !","service":"api-hot-takes","timestamp":"2022-11-03T12:04:42.232Z"}
-{"level":"info","message":"Listening on port 3000","service":"api-hot-takes","timestamp":"2022-11-03T12:04:48.377Z"}
-{"level":"info","message":"Connexion à MongoDB réussie !","service":"api-hot-takes","timestamp":"2022-11-03T12:04:48.970Z"}
-{"level":"info","message":"Listening on port 3000","service":"api-hot-takes","timestamp":"2022-11-03T12:09:51.398Z"}
-{"level":"info","message":"Connexion à MongoDB réussie !","service":"api-hot-takes","timestamp":"2022-11-03T12:09:51.963Z"}
