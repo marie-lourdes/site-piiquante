@@ -17,7 +17,6 @@ const helmet = require( "helmet" );
 // import middleware nocache
 const noCache = require( "nocache")
 
-
 // import du package path pour normaliser le chemin d'acces au dossier images du serveur back end
 const path = require( "path" );
 
@@ -30,7 +29,6 @@ const routerSauces = require( "./routes/Sauces" );
 //on execute l application express via sa methode express() accessible grace au module express importé
 const app = express();
 
-
 //...........................CREATION DE LA CONNEXION DE L'APPLICATION EXPRESS AVEC LA BASE DE DONNEES MONGOBD ATLAS AVEC LE MODULE MONGOOSE..........................
 
 // import du module mongoose
@@ -42,7 +40,6 @@ const logger = require("./log/logger");
 mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
 .then( () => logger.info( 'Connexion à MongoDB réussie !' ) )
 .catch( () => logger.error( 'Error: Connexion à MongoDB échouée !' ) );
-
 
 
 //..........................CONFIGURATION GÉNÉRALE POUR LES RESSOURCES IMAGES TELECHARGÉES PAR L UTILISATEUR ET SAUVEGARDÉ PAR MULTER:création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique.................
@@ -90,9 +87,6 @@ app.use( "/api/auth", routerUsers );
 
 //création de la route de base pour les sauces
 app.use( "/api/sauces", routerSauces );
-
-
-
 
 
 // exporte la valeur actuelle de l objet exports du module app.js pour le rendre accessible hors de ce module, notamment au fichier server.js, pour que le serveur node s execute avec express et les fonctionnalités de l application express
