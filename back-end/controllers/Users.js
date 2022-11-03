@@ -33,10 +33,10 @@ const logger = require( "../log/logger" );
        
         // enregistrement de la nouvelle instance de modèle "user" dans la base de données intégrant les données structurées avec les valeurs
         user.save()
-        .then( () => res.status( 201 ).json( { message: "compte utilisateur crée" } ) )//save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
-        .catch( error => res.status( 400 ).json( { error: error._message } ) );// catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
+        .then( () => res.status( 201 ).json( { message: "compte utilisateur crée" } ) ) //save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
+        .catch( error => res.status( 400 ).json( { error: error._message } ) ); // catch() récupère les erreurs généres dans le: l'enregistrement du model et indique une erreur de requête avec le code http 400  
       } )
-  .catch( error => res.status( 500 ).json( { error } ) );// nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
+  .catch( error => res.status( 500 ).json( { error } ) ); // nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
 };
 
 // fonction controller pour la connexion et la verification des identifiant de connexion
@@ -58,6 +58,7 @@ exports.login = ( req, res ) => {
         // si le mot de passe saisi par l utilisateur  haché par bcrypt a un hash qui resulte de la meme chaine de caractere qui à crée le hash du mot de  passe de l utilisateur enregistré dans la base de donnée,la methode compare renvoit true dans le cas contraire false
         bcrypt.compare( req.body.password, user.password )
         .then( valid => {
+          console.log("valid",valid)
           // on recupere le resultat de la methode compare(), si c'est false , le bloc then execute le code suivant dans la structure conditionnelle
           if( !valid ){
             // log en cas de force brute
@@ -77,10 +78,7 @@ exports.login = ( req, res ) => {
             )          
           } );       
         } )
-        .catch( error => {
-          res.status( 500 ).json( { error } );
-         
-        } );
+        .catch( error =>  res.status( 500 ).json( { error } ) );
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
     })
     .catch( error => res.status( 500 ).json( { error } ) );
