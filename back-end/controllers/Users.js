@@ -33,10 +33,10 @@ const logger = require( "../log/logger" );
        
         // enregistrement de la nouvelle instance de modèle "user" dans la base de données intégrant les données structurées avec les valeurs
         user.save()
-        .then( () => res.status( 201 ).json( { message: "compte utilisateur crée" } ) ) //save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
-        .catch( error => res.status( 400 ).json( { error: error._message } ) ); // catch() récupère les erreurs généres dans le: l'enregistrement du model et indique une erreur de requête avec le code http 400  
+        .then( () => res.status( 201 ).json( { message: "compte utilisateur crée" } ) )//save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
+        .catch( error => res.status( 400 ).json( { error: error._message } ) );// catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
       } )
-  .catch( error => res.status( 500 ).json( { error } ) ); // nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
+  .catch( error => res.status( 500 ).json( { error } ) );// nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
 };
 
 // fonction controller pour la connexion et la verification des identifiant de connexion
@@ -46,7 +46,7 @@ exports.login = ( req, res ) => {
     User.findOne( { email: req.body.email } )
     .then( user => { // recuperation de l utilisateur ayant l email avec la valeur entré par l utilisateur lors de la requête
         if( !user ){ // verification du resultat  envoyé  dans la promesse de findOne() si la valeur vaut false , c'est qu il n y a aucune correspondance avec un utilisateur enregistré dans la base de donné ayant l email entré lors de la requete POST du front-end lors de la validation du formulaire de connexion
-          // log en cas de force brute
+          //log en cas de force brute
           logger.error( "erreur connexion:" + " " + "ip" + req.ip + " " + req.method + " " + req.originalUrl );
           // nous indiquons ci-dessus, dans la reponse à la requête, le code http 401 qui correspond à un accès non-autorisé
           // nous précisons pas que l 'erreur vient de l 'email qui n est attribué à aucun utilisateur dans la base de données pour éviter qu'une personne cherche si un utilisateur est inscrit
@@ -58,10 +58,9 @@ exports.login = ( req, res ) => {
         // si le mot de passe saisi par l utilisateur  haché par bcrypt a un hash qui resulte de la meme chaine de caractere qui à crée le hash du mot de  passe de l utilisateur enregistré dans la base de donnée,la methode compare renvoit true dans le cas contraire false
         bcrypt.compare( req.body.password, user.password )
         .then( valid => {
-          console.log("valid",valid)
           // on recupere le resultat de la methode compare(), si c'est false , le bloc then execute le code suivant dans la structure conditionnelle
           if( !valid ){
-            // log en cas de force brute
+            //log en cas de force brute
             logger.error( "erreur connexion:" + " " + "ip" + req.ip + " " + req.method + " " + req.originalUrl );
             return res.status( 401 ).json( { message: "adresse e-mail/mot de passe incorrecte" } ); 
             // envoie de la reponse avec le code http 401 erreur coté client, l 'accès n est pas autorisé
@@ -78,11 +77,11 @@ exports.login = ( req, res ) => {
             )          
           } );       
         } )
-        .catch( error =>  res.status( 500 ).json( { error } ) );
+        .catch( error => res.status( 500 ).json( { error } ) );
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
     })
     .catch( error => res.status( 500 ).json( { error } ) );
-  // catch recupere l erreur genéré par la methode findOne() de mongoose quand le serveur(plus précisement l'api qui gere les requetes serveur) ne trouvera pas l'utilisateur dans la base de données 
+  // catch recupere l erreur généré dans le premier bloc then qui traite le resultat de la promesse de la methode findOne()  quand le serveur(plus précisement l'api qui gere les requetes serveur) ne trouvera pas l'utilisateur dans la base de données 
 };
 
 
