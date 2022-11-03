@@ -1,9 +1,11 @@
 // import du modèle de sauces mongoose pour les opérations CRUD avec les methodes de mongoDB sur chaque route indivuelle
 const Sauce = require( "../models/Sauces" );
+
 //import du module native de node appelé fs
 const fs = require( "fs" );
 
-const logger = require("../log/logger");
+// import du module  logger contenant la bibliotheque winston pour enregistrer les log
+const logger = require( "../log/logger" );
 
 //............................CREATION DES FONCTIONS SEMANTIQUES DU CONTROLLERS POUR LES OPÉRATIONS CRUD (logique metier de chaque routes individuelles dans l objet router pour les sauces) SUR LES ROUTES INDIVIDUELLES DANS ROUTES SAUCES.JS.............................
 
@@ -11,9 +13,9 @@ const logger = require("../log/logger");
 exports.addSauce = ( req, res ) => {
     logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method +" " + req.originalUrl)
     let objtSauce = req.body.sauce;
+
     //on supprime les caractères spéciaux des entrées utilisateurs
      objtSauce = deleteChars( objtSauce );
-
     // on récupère l objet body ajouté dans la requête par multer et transformé en chaine de caractère et on le reconstruis en mémoire en objet javascript avec JSON.parse
     objtSauce = JSON.parse( objtSauce );
     // on supprime l id generé par le front- end car la base de donnée génère déja un id pour la sauce crée et enregistré dans la base de données
@@ -44,7 +46,7 @@ exports.addSauce = ( req, res ) => {
     // Enregistrement dans la base de donnée de la nouvel instance de model sauce dans la base de données MongoAtlas grace à la méthode save() de MongoDB
     sauce.save()
     .then( () => {
-        res.status( 201 ).json( {message: "Votre sauce a bien été ajoutée"} );
+        res.status( 201 ).json( { message: "Votre sauce a bien été ajoutée" } );
         console.log( "sauce ajouté", sauce );
     } )
     .catch( error => {
@@ -55,22 +57,19 @@ exports.addSauce = ( req, res ) => {
     res.status( 400 ).json( {error: error.message} )
 
     // logging erreurs detaillés pour chaque champs 
- 
-         logError();  
-
-        function logError(){
-        
-            if(error.errors.name ) console.log( "erreur title",error.errors.name.message );
-            if(error.errors.manufacturer ) console.log( "erreur manufact",error.errors.manufacturer.message );
-            if(error.errors.description) console.log( "erreur description",error.errors.description.message );
-            if(error.errors.mainPepper ) console.log( "erreur pepper",error.errors.mainPepper.message );
-            if(error.errors.heat ) console.log( "erreur heat",error.errors.heat.message );
-            if(error.errors.userId ) console.log( "erreur usr",error.errors.userId.message );
-            if(error.errors.imageUrl ) console.log( "erreur image ",error.errors.imageUrl.message );
-            if(error.errors.likes ) console.log( "erreur like",error.errors.likes.message );
-            if(error.errors.dislikes ) console.log( "erreur dislike",error.errors.dislikes.message );
-            if(error.errors.usersLiked ) console.log( "erreur  user like",error.errors.usersLiked.message );
-            if(error.errors.usersDisliked ) console.log( "erreur user no like",error.errors.usersDisliked.message );
+       logError();  
+       function logError(){      
+            if( error.errors.name ) console.log( "erreur title", error.errors.name.message );
+            if( error.errors.manufacturer ) console.log( "erreur manufact", error.errors.manufacturer.message );
+            if( error.errors.description) console.log( "erreur description", error.errors.description.message );
+            if( error.errors.mainPepper ) console.log( "erreur pepper", error.errors.mainPepper.message );
+            if( error.errors.heat ) console.log( "erreur heat", error.errors.heat.message );
+            if( error.errors.userId ) console.log( "erreur usr", error.errors.userId.message );
+            if( error.errors.imageUrl ) console.log( "erreur image ", error.errors.imageUrl.message );
+            if( error.errors.likes ) console.log( "erreur like", error.errors.likes.message );
+            if( error.errors.dislikes ) console.log( "erreur dislike", error.errors.dislikes.message );
+            if( error.errors.usersLiked ) console.log( "erreur  user like", error.errors.usersLiked.message );
+            if( error.errors.usersDisliked ) console.log( "erreur user no like", error.errors.usersDisliked.message );
             if( ! error.errors.name 
                 && ! error.errors.manufacturer 
                 && ! error.errors.description 
@@ -88,9 +87,8 @@ exports.addSauce = ( req, res ) => {
     } );  
 }
 
-
 // fonction pour supprimer les caractères spéciaux des entrées utilisateurs du formulaire add-sauce et modify-sauce et éviter les injections ou XSS
-function deleteChars(chars){
+function deleteChars( chars ){
     chars = chars.replace( /[`~@#$&*_|+\-=?;'<>/]/gi, '' );
     return chars;
 }
@@ -98,11 +96,11 @@ function deleteChars(chars){
 // *** fonction sémantique de la logique routing router.post("/:id/like"): liker, disliker une sauce specifique ou annuler un like ou dislike 
 
 exports.add_Remove_NoticeLike = ( req, res ) => {
-    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method +" " + req.originalUrl)
+    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method + " " + req.originalUrl )
 
     //par sécurité on supprime l userId ajouté par le requérant qui like et on ajoute dans le tableau usersLiked le userId ajouté à la requête signé (propriété auth de la requête req.auth) dans le middleware auth.js
         delete  req.body.userId;
-        Sauce.findOne( {_id: req.params.id} )
+        Sauce.findOne( { _id: req.params.id } )
         .then( sauce => {
      
             /*-liker et disliker: Avant d'ajouter un utilisateur (userId) au tableau userLiked et usersDisliked et d' incrémenter la valeur de likes et dislikes de la sauce, 
@@ -140,61 +138,61 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
            
             function liker(){
                 //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
-                Sauce.updateOne( {_id: req.params.id}, {
+                Sauce.updateOne( { _id: req.params.id }, {
                     //avec l opérateur de mise à jour $inc:on incremente de 1 le champ likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
-                    $inc: {likes: 1},
+                    $inc: { likes: 1 },
                     //avec l operateur de mise jour $push: on ajoute au champ usersLiked qui est un tableau la valeur de l userId du requérant
-                    $push: {usersLiked: req.auth.userId}  
+                    $push: { usersLiked: req.auth.userId }  
                 } )
                 .then( sauce => {
-                    res.status( 201 ).json( {message: "sauce liké"} );
+                    res.status( 201 ).json( { message: "sauce liké" } );
                     console.log( "sauce liké", sauce );
                 } )
-                .catch( error => res.status( 400 ).json( {error} ) );     
+                .catch( error => res.status( 400 ).json( { error } ) );     
             }
     
             function disliker(){
-               Sauce.updateOne( {_id: req.params.id}, {
+               Sauce.updateOne( { _id: req.params.id }, {
                     //avec l opérateur de mise à jour $inc:on incremente de 1 le champ dislikes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
-                    $inc: {dislikes: 1},
+                    $inc: { dislikes: 1 },
                     //avec l operateur de mise jour $push: on ajoute au champs usersdisLiked qui est un tableau la valeur de l userId du requérant
-                    $push: {usersDisliked: req.auth.userId} 
+                    $push: { usersDisliked: req.auth.userId } 
                 } )
                 .then( sauce => {
-                    res.status( 201 ).json( {message: "sauce disliké"} );
+                    res.status( 201 ).json( { message: "sauce disliké" } );
                     console.log( "sauce disliké", sauce );// resultat de la promesse de la methode updateOne: true avec la query de comparaison
                 } )
-                .catch( error => res.status( 400 ).json( {error} ) );           
+                .catch( error => res.status( 400 ).json( { error } ) );           
             }
     
             function cancelLike(){
                 //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
-                Sauce.updateOne( {_id: req.params.id}, {
+                Sauce.updateOne( { _id: req.params.id }, {
                     //avec l opérateur de mise à jour $inc:on desincremente de 1 le champ likes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
-                    $inc: {likes: -1},
+                    $inc: { likes: -1 },
                     //avec l operateur de mise jour $pull: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
-                    $pull: {usersLiked: req.auth.userId}  
+                    $pull: { usersLiked: req.auth.userId }  
                 } )
                 .then( sauce => {
-                    res.status( 201 ).json( {message: "la sauce n est plus liké"} );
+                    res.status( 201 ).json( { message: "la sauce n'est plus liké" } );
                     console.log( "sauce plus liké", sauce );
                 } )
-                .catch( error => res.status( 400 ).json( {error} ) );
+                .catch( error => res.status( 400 ).json( { error } ) );
             }
     
             function cancelDislike(){
                 //modification de la sauce trouvé par la query de comparaison passé en premier argument dans  la methode updateOne et les operateurs de mise a jour de MongoDB
-                Sauce.updateOne( {_id: req.params.id}, {
+                Sauce.updateOne( { _id: req.params.id }, {
                     //avec l opérateur de mise à jour $inc:on desincremente de 1 le champ dislikes de la sauce enregistré dans la base de données lors de la requete POST de l utilisateur
-                    $inc: {dislikes: -1},
+                    $inc: { dislikes: -1 },
                     //avec l operateur de mise jour $push: on retire au champ usersLiked qui est un tableau la valeur de l userId du requérant
-                    $pull: {usersDisliked: req.auth.userId}  
+                    $pull: { usersDisliked: req.auth.userId }  
                 } )
                 .then( sauce => {
-                    res.status( 201 ).json( {message: "la sauce n est plus disliké"} );
+                    res.status( 201 ).json( { message: "la sauce n est plus disliké" } );
                     console.log( "sauce plus disliké", sauce );
                 } )
-                .catch( error => res.status( 400 ).json( {error} ) );
+                .catch( error => res.status( 400 ).json( { error } ) );
             }      
         } )
         .catch( error => res.status( 500 ).json( {error} ) );
@@ -203,9 +201,9 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
   // *** fonction semantique de la logique routing router.put("/:id"): modifier une sauce spécifique
 
   exports.modifySauce = ( req, res ) => {
-    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method + " " + req.originalUrl)
+    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method + " " + req.originalUrl )
     let saucePutObjt =
-     req.file ? req.body.sauce : JSON.stringify(req.body);
+     req.file ? req.body.sauce : JSON.stringify( req.body );
  
     // suppression des caractères speciaux des champs textuelles qui sont dans le body de la requete si le body n est pas envoyé avec leformat multipart/form-data soit dans l objet sauce ajouté par multer dans le body de la requête
      saucePutObjt = deleteChars( saucePutObjt ); 
@@ -213,8 +211,8 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
     - si il est sous forme de clé valeur par le constructeur form data et modifié par le middleware upload(multer) en deux objet dans la requête: objet body et  objet file(pour le fichier)
     - si il est sous forme d'objet json sans fichier donc pas sous la forme form-data et donc non modifié par le middleware upload (multer)*/
     const sauceObjt = 
-        req.file ? { ...JSON.parse( saucePutObjt ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}`}
-        : {...JSON.parse( saucePutObjt )};
+        req.file ? { ...JSON.parse( saucePutObjt ), imageUrl: `${req.protocol}://${req.get( "host" )}/images/${req.file.filename}` }
+        : { ...JSON.parse( saucePutObjt ) };
 
     /* par securité nous supprimons l userId ajouté dans la requête par l utilisateur 
     et recupererons l userId que nous avons ajouté à la requête lors de l 'authentification de l utilisateur du middleware auth
@@ -223,7 +221,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
     
     // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete PUT front-end pour afficher la sauce modifié dans le DOM 
     //nous comparons l userId du requerant et l userId enregistré dans la ressource sauce de la collection sauces
-    Sauce.findOne( {_id: req.params.id} )
+    Sauce.findOne( { _id: req.params.id } )
     .then( sauce => {
         /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then
          que la sauce avec l'id du parametre de recherche enregistré dans la base de donnée comporte le même userId (utlisateur) que le userId qui fait la requête de modification
@@ -233,7 +231,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
             cela veut dire qu il ne l'a pas crée et qu il n en est pas propriétaire
             On envoie dans la reponse à la requête de modification un code http 403 avec le message de requête non autorisée
             Celui qui a crée la sauce uniquement a le droit de modifier la sauce qu'il a crée et ajouté à l'application d'avis gastromique hot takes*/
-            res.status( 403 ).json( {message: "requête non autorisée, vous n'êtes pas  propriétaire de cette sauce"} )
+            res.status( 403 ).json( { message: "requête non autorisée, vous n'êtes pas propriétaire de cette sauce" } )
         }else{
             // si l 'utilisateur est bien le propriétaire de la sauce il peut modifier la sauce et nous tenons compte de sa requête de modification en modifiant sa sauce depuis la collection sauces de la base de données avec la methode mongoose updateOne()
             // mais d abord: dans le cas ou le fichier est aussi modifié, avant la modification de la sauce, nous recuperons le nom du fichier  dans lurl de l image de la sauce enregistré dans la base de donné pour le supprimé du dossier back-end avec le module fs qui gere les fichiers dans un programme node
@@ -249,7 +247,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                     } 
                     modifSauce();
                     console.log( 'Image et sauce modifiées !' );
-                });
+                } );
             }else if( !req.file ){
             //si seuls les champs textuelles du formulaire ont été modifiés, nous remplaçons l'ancien contenu par le nouveau  sans modifier l image de cette sauce stocké dans le dossier statique du serveur back-end "images"
                 modifSauce();
@@ -258,23 +256,23 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
         }
         function modifSauce(){
             // on modifie la sauce en precisant l id de la sauce en premier argument ,et en second argument, le contenu du body modifié dans la variable sauceobjt(selon certaines conditions) de la requête de modification qui remplace celui d'avant et nous réindiquons l'_id de la sauce qui est celui du parametre pour s assurer de modifier celle de la page sauce où il se trouve
-          Sauce.updateOne( {_id: req.params.id}, {...sauceObjt, _id: req.params.id} )
-          .then( () => res.status( 200 ).json( {message: "la sauce a bien été modifiée"} ) )// envoie du code http 200 de la requête reussie
+          Sauce.updateOne( { _id: req.params.id }, { ...sauceObjt, _id: req.params.id } )
+          .then( () => res.status( 200 ).json( { message: "la sauce a bien été modifiée" } ) )// envoie du code http 200 de la requête reussie
           .catch( error => {
-            res.status( 400 ).json( {error} )
-            logger.error(" erreur requete modification")
+            res.status( 400 ).json( { error } );
+            logger.error( " erreur requete modification" );
            } );// envoie du code htpp 400 qui signale une erreur coté client
         }
     } )
-    .catch( error => res.status( 500 ).json( {error} ) ); 
+    .catch( error => res.status( 500 ).json( { error } ) ); 
     //catch va recuperer l erreur généré par la promesse envoyé du premier then et l 'envoyer dans la réponse modifié avec le status 500 erreur serveur
 }
 
  // *** fonction semantique de la logique routing router.delete("/:id"): supprimer une sauce spécifique
 
  exports.deleteSauce = ( req, res ) => {
-    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method +" " + req.originalUrl)
-    Sauce.findOne( {_id: req.params.id} )
+    logger.info( "provenance des requêtes:" + " " + "ip" + req.ip + " " + req.auth.userId + " " + req.method + " " + req.originalUrl )
+    Sauce.findOne( { _id: req.params.id } )
     .then( sauce => {
         /*on verifie dans la resultat de promesse envoyé par findOne() et recupéré par le bloc then
          que la sauce avec l'id du parametre de recherche enregistré dans la base de donnée comporte le même userId (utlisateur) que le userId qui fait la requête de modification
@@ -284,7 +282,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
             cela veut dire qu il ne l'a pas crée et qu il n en est pas propriétaire
             On envoie dans la reponse à la requête de suppression un code http 403 avec le message de requête non autorisée
             Celui qui a crée la sauce uniquement a le droit de supprimer la sauce qu'il a crée et ajouté à l'application d'avis gastromique hot takes*/
-            res.status( 403 ).json( {message: "requête non autorisée, vous n'êtes pas  propriétaire de cette sauce"} )
+            res.status( 403 ).json( { message: "requête non autorisée, vous n'êtes pas  propriétaire de cette sauce" } )
         }else{
             const fileName = sauce.imageUrl.split( "/images/" )[1];
             // la methode fs.unlink() du module fs gere les fichiers dans un programme node ici il supprime le fichier que nous avons recuperons dans l imageUrl enregistré dans la sauce à modifié dans la base de donnée 
@@ -294,29 +292,29 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                 } 
                 console.log( 'sauce supprimée' );
                  // on supprime la sauce en precisant l id de la sauce en premier argument  de la requête de modification, l'_id de la sauce qui est celui du parametre pour s assurer de supprimer celle de la page sauce où il se trouve
-                Sauce.deleteOne( {_id: req.params.id} )
-                .then( () => res.status( 200 ).json( {message: "la sauce a bien été supprimée"} ) )// envoie du code http 200 de la requête reussie
-                .catch( error => res.status( 400 ).json( {error} ) );// envoie du code htpp 400 qui signale une erreur coté client       
+                Sauce.deleteOne( { _id: req.params.id } )
+                .then( () => res.status( 200 ).json( { message: "la sauce a bien été supprimée" } ) )// envoie du code http 200 de la requête reussie
+                .catch( error => res.status( 400 ).json( { error } ) );// envoie du code htpp 400 qui signale une erreur coté client       
             } );            
         }     
     } )
-    .catch( error => res.status( 500 ).json( {error} ) );// on recupere les erreurs genéré par la promesse du premier then et on envoie un erreur coté serveur, si la suppression ne se fait du à un pb avec la base de donnée ou du serveur en lui même
+    .catch( error => res.status( 500 ).json( { error } ) );// on recupere les erreurs genéré par la promesse du premier then et on envoie un erreur coté serveur, si la suppression ne se fait du à un pb avec la base de donnée ou du serveur en lui même
 } 
 
  // *** fonction semantique de la logique routing router.get("/:id"): recuperer une sauce specifique pour que le front-end l affiche dans la page sauce
 
  exports.get_DisplayOneSauce = ( req, res ) => {
      // nous recherchons la sauce dans la collection de la base de données avec la query de comparaison _id dans la methode de mongoose findOne qui prend comme valeur le parametre de recherche de l url de la requete GET front-end pour afficher dans le DOM la sauce
-    Sauce.findOne( {_id: req.params.id})// nous associons l element id de l endpoint à la requête qui recupere la valeur du parametre de recherche de la requête du front end avec le même element id de l'endpoint
-    .then(sauce => res.status( 200 ).json( sauce ) )//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoDB findOne() 
-    .catch( error => res.status( 404 ).json( {error} ) );// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
+    Sauce.findOne( { _id: req.params.id })// nous associons l element id de l endpoint à la requête qui recupere la valeur du parametre de recherche de la requête du front end avec le même element id de l'endpoint
+    .then( sauce => res.status( 200 ).json( sauce ) )//le bloc then recupere le resultat de la promesse de findOne et envoie  dans la reponse de la requête le code http 200 et le resultat de cette promesse qui comporte la sauce avec l _id indiqué dans la methode mongoDB findOne() 
+    .catch( error => res.status( 404 ).json( { error } ) );// catch recupere les erreur généré par la promesse envoyé par then et envoie le code http 404 si la ressource requêté n existe pas ou n'est pas trouvé
 }
 
  // *** fonction semantique de la logique routing router.get("/"): recuperer  toutes les sauces pour que le front-end les affiche dans  la page all-sauces
   exports.get_DisplayAllSauces = ( req, res ) => {
     Sauce.find()// va chercher tous les elements dans la collection de la base de données , nous luis avons pas donnée de query de comparaison en argument
     .then( sauces => res.status( 200 ).json( sauces ) )// avec le bloc then nous recuperons le resultat de la promesse envoyé par find() et l envoyons dans la reponse au front -end qui l affichera dans le DOM avec le code http de reussite 200 de la requête GET
-    .catch( error => res.status( 404 ).json( {error} ) );// catch recupere l erreur generé sur la promesse envoyé par then  
+    .catch( error => res.status( 404 ).json( { error } ) );// catch recupere l erreur generé sur la promesse envoyé par then  
 }
 
 

@@ -1,8 +1,12 @@
 // import du package express pour acceder à la methode router()
 const express = require( "express" );
-const rateLimit = require("../middlewares/rateLimit")
+
+//import du module rateLimit pour limiter les requêtes
+const rateLimit = require( "../middlewares/rateLimit" );
+
 //import des methodes du fichier Users.js de controllers
 const userCtrler = require( "../controllers/Users" );
+
 // On crée un objet router pour y ajouter les routes individuelles  qui seront rajouté à un route de base, une route principale
 const router = express.Router();
 
@@ -11,7 +15,7 @@ const router = express.Router();
 //création de la route individuelle "/signup" avec la methode du controller signup
 router.post( "/signup", userCtrler.signUp );
 
-router.post( "/login",rateLimit.rateLimiterConnexion, userCtrler.login );
+router.post( "/login", rateLimit.rateLimiterConnexion, userCtrler.login );
 
 // on exporte l 'objet router pour le rendre accessible à l application dans le fichier app.js et ajouter les routes individuelles à la route de base de l application
 module.exports = router;

@@ -1,5 +1,6 @@
 //import du package mongoose pour accéder aux methodes shema et model de mongoose
 const mongoose = require( "mongoose" );
+
 //import du plugin de mongoose pour vérifier avant enregistrement dans la base de données que l'email est une donnée unique dans la base de donnée
 const uniqueValidator = require( "mongoose-unique-validator" );
 

@@ -1,10 +1,9 @@
 // import du package jsonwebtoken pour la verification du token de l utilisation lorsqu'il fait une requête CRUD vers l'API
 const jwt = require( "jsonwebtoken" );
 
-
 // import du package dotenv pour charger les variables d 'environnement 
 const dotenv = require( "dotenv" );
-const logger = require("../log/logger");
+const logger = require( "../log/logger" );
 dotenv.config();
 const TOKEN_ALGORITHM = process.env.TOKEN_REQUEST;
 const CLIENT = process.env.CLIENT_REQUEST;
@@ -26,7 +25,7 @@ module.exports = (req, res, next) => {
         }
      next();
     }catch( error ){
-        res.status( 401 ).json( {error} );
+        res.status( 401 ).json( { error } );
         //log erreur d authentification
         logger.error( "Erreur authentification:" + " " + "ip" + req.ip + " " + " " + req.method +" " + req.originalUrl );
     }

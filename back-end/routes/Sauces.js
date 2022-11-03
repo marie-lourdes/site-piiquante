@@ -1,13 +1,18 @@
 // import de l application express pour acceder à la méthode router et crée l objet router
 const express = require( "express" );
-const rateLimit = require("../middlewares/rateLimit")
+
+//import du module rateLimit pour limiter les requêtes
+const rateLimit = require( "../middlewares/rateLimit" );
 
 //import du module auth pour authentifier et signer les requêtes  vers l API avec l id utilisateur
 const auth = require( "../middlewares/auth" );
+
 //import du middleware multer
 const upload = require( "../middlewares/config-upload" );
+
 //import du controller pour accéder aux methodes du controller de sauce.js
 const saucesCtrler = require( "../controllers/Sauces" );
+
 // creation de l 'objet router qui recevra les routes individuelles
 const router = express.Router();
 
@@ -23,12 +28,12 @@ router.post( "/:id/like", rateLimit.rateLimiter, auth, saucesCtrler.add_Remove_N
 router.put( "/:id", rateLimit.rateLimiter,auth, upload, saucesCtrler.modifySauce );
 
 // ***création de la route individuelle DELETE et sa fonction sémantique "deleteSauce" (pour la page sauce :  requeter avec la methode http DELETE une sauce spécifique)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes  
-router.delete( "/:id",rateLimit.rateLimiter, auth, saucesCtrler.deleteSauce );
+router.delete( "/:id", rateLimit.rateLimiter, auth, saucesCtrler.deleteSauce );
 
 // ***création de la route individuelle GET et sa fonction "get_DisplayOneSauce" (pour la page sauce :  requeter une sauce spécifique et  envoyer les données au front-end)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 
 //nous ajoutons un endpoint avec l element id rendu accessible de manière dynamique en tant que parametre de recherche dans la requête grace au ":"
-router.get( "/:id",rateLimit.rateLimiter, auth, saucesCtrler.get_DisplayOneSauce );
+router.get( "/:id", rateLimit.rateLimiter, auth, saucesCtrler.get_DisplayOneSauce );
 
 // ***création de la route individuelle GET et sa fonction "get_DisplayAllSauces" (pour la page all sauce: requêter toutes les sauces  et  envoyer les données de toutes les sauces au front-end)dans l objet router et ajout du middleware auth qui gère l authentification des requêtes
 router.get( "/", rateLimit.rateLimiter, auth, saucesCtrler.get_DisplayAllSauces );

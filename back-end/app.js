@@ -27,11 +27,13 @@ const routerSauces = require( "./routes/Sauces" );
 //on execute l application express via sa methode express() accessible grace au module express importé
 const app = express();
 
-//...........................CREATION DE LA CONNEXION DE L'APPLICATION EXPRESS AVEC LA BASE DE DONNEES MONGOBD ATLAS AVEC LE MODULE MONGOOSE..........................
-
 // import du module mongoose
 const mongoose = require( "mongoose" );
-const logger = require("./log/logger");
+
+//import du module logger pour enregistrer les logs
+const logger = require( "./log/logger" );
+
+//...........................CREATION DE LA CONNEXION DE L'APPLICATION EXPRESS AVEC LA BASE DE DONNEES MONGOBD ATLAS AVEC LE MODULE MONGOOSE..........................
 
 // creation de la connexion avec authentification de l'application  express avec la base de données MongoDB Atlas
 // base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
@@ -49,7 +51,7 @@ app.use( helmet() );
 
 //.............................SECURISATION DES DONNEES EN TRANSIT AVEC NO CACHE..................................................
 // import du middleware express nocache
-app.use( noCache())
+app.use( noCache() )
 
 //........................CONFIGURATION GENERALE DES REQUETES ENTRANTES ET DE L'OBJET REQUEST DONT LE BODY EST INDIQUÉ  AU FORMAT JSON DANS LE HEADER DE LA REQUETE...................
 

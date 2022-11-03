@@ -13,14 +13,14 @@ pour eviter les changements d adresse ip et de port, le port ne prendra pas la v
 const MY_PORT = process.env.PORT;
 //..........................................LOGGING SERVEUR.....................................................
 
-const logger = require("./log/logger");
+const logger = require( "./log/logger" );
 // .................................GESTION DES ERREURS SERVEUR...............................................
 
 //gestion des erreurs du serveur et des appels du systeme avec la fonction errorHandler
 
 const errorHandler = error => {
     if( error.syscall !== 'listen' ){// les erreurs de sytems ont des nom, systemcall renvoit une chaine de caractere avec le nom de l erreur de l appel du system
-      logger.error( "erreur systeme")
+      logger.error( "erreur systeme" )
       throw error; //stoppe le programme et fournit la valeur de l exception  stocker ds "error" 
     }
    
@@ -62,11 +62,11 @@ const errorHandler = error => {
 const server = http.createServer( app );
 
 // création des logging basiques pour les evenements erreur et les évenements d'écoute du serveur sur le port
-server.on('error', errorHandler); // ici l ecouteur d evenment ecoute les evenement erreur qui se produit sur le server)
-server.on('listening', () => { // ecoute les evenement nomme listening qui se produit sur server
+server.on( 'error', errorHandler ); // ici l ecouteur d evenment ecoute les evenement erreur qui se produit sur le server)
+server.on( 'listening', () => { // ecoute les evenement nomme listening qui se produit sur server
   const bind = 'port ' + MY_PORT;
-  logger.info('Listening on ' + bind);
-});
+  logger.info( 'Listening on ' + bind );
+} );
 
 //...................................ECOUTE DU SERVEUR SUR LA VARIABLE D ENVIRONNEMENT PORT.........................................
 //le serveur attend les requete sur ce port et ecoute sur port, requete qui sera traité par l aplication express qui est appélé dans le module app.js
