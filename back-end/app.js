@@ -9,8 +9,6 @@ const DB = process.env.URI_DB;
 // module app.js qui recupere le module express et execute l application ainsi que ces fonctions middleware qui traite les requête du serveur crée dans server.js
 const express = require( "express" );
 
-const rateLimit = require( "./middlewares/rateLimit" );
-
 // import du module helmet
 const helmet = require( "helmet" );
 
@@ -37,10 +35,9 @@ const logger = require("./log/logger");
 
 // creation de la connexion avec authentification de l'application  express avec la base de données MongoDB Atlas
 // base de données securisé par les données de connexion caché dans un fichier, données utilisateur sécurisé et base de données sécurisé
-mongoose.connect( DB, {useNewUrlParser: true, useUnifiedTopology: true} )
+mongoose.connect( DB, { useNewUrlParser: true, useUnifiedTopology: true } )
 .then( () => logger.info( 'Connexion à MongoDB réussie !' ) )
 .catch( () => logger.error( 'Error: Connexion à MongoDB échouée !' ) );
-
 
 //..........................CONFIGURATION GÉNÉRALE POUR LES RESSOURCES IMAGES TELECHARGÉES PAR L UTILISATEUR ET SAUVEGARDÉ PAR MULTER:création de la route pour les images téléchargés par les utilisateurs dont les ressources images seront traitées de manière statique.................
 //cette route est placé avant les middlewares helmet, ces derniers contiennent  des restrictions x-frame-options et empechant les requêtes imagesUrl, 
@@ -74,20 +71,16 @@ function corsConfiguration (){
     res.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization' );
     res.setHeader( 'Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS' );
     next();// passe l execution du serveur au middleware suivant  qui traite l'envoie de l'objet reponse des requêtes sur tout type de verbe http
-  });
-
+  } );
 }
 
-
 // ............................................CREATION DES ROUTES DE BASE POUR TOUS LES VERBES HTPP AU NIVEAU DE L APPLICATION............................
-
 
 // création de la route principale pour l authentification des utilisateurS au niveau de l'application et ajout des routes individuelles signup et login (dans l'objet "routerUsers") a la route principale "/api/auth"
 app.use( "/api/auth", routerUsers );
 
 //création de la route de base pour les sauces
 app.use( "/api/sauces", routerSauces );
-
 
 // exporte la valeur actuelle de l objet exports du module app.js pour le rendre accessible hors de ce module, notamment au fichier server.js, pour que le serveur node s execute avec express et les fonctionnalités de l application express
 module.exports = app;

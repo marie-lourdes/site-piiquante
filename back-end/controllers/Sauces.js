@@ -244,7 +244,7 @@ exports.add_Remove_NoticeLike = ( req, res ) => {
                 const fileName = sauce.imageUrl.split( "/images/" )[1];
                 // la methode fs.unlink() du module fs gere les fichiers dans un programme node ici il supprime le fichier que nous avons recuperons dans l imageUrl enregistré dans la sauce à modifié dans la base de donnée 
                 fs.unlink( `images/${fileName}`, ( err ) => { //le call back recupere les erreurs et arrete la fonction unlink(),et le programme qui suit (dans le cas ou il n y a pas de catch)si il y a une erreur avec le mot clé throw
-                    if ( err ){
+                    if( err ){
                         throw err; 
                     } 
                     modifSauce();
