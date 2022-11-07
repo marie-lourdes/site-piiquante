@@ -19,6 +19,12 @@ const logger = require( "../log/logger" );
 
 // fonction controller pour l'inscription d un utilisateur
  exports.signUp = ( req, res ) => {
+  const regexPswrd = /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$/
+  const validationPsword = regexPswrd.test(req.body.password )
+      if( !validationPsword ) return res.status(400).json(
+        {error: "format: email/password invalid",
+         message: "email required : @ and extension .fr, .com ..., password required: 8 characters minimum, lowercase, uppercase, number, special character "
+        } )
     // recuperation du mot de passe de la requête utilisateur lors de son inscription via le formulaire qu 'on encode avec le package bcrypt avant d'enregister le mot de passe dans le modèle User et la collection renommée "users" de MongoDB Atlas
     bcrypt.hash( req.body.password, 10 )
     .then( hash => {
@@ -34,10 +40,29 @@ const logger = require( "../log/logger" );
         // enregistrement de la nouvelle instance de modèle "user" dans la base de données intégrant les données structurées avec les valeurs
         user.save()
         .then( () => res.status( 201 ).json( { message: "compte utilisateur crée" } ) )//save() envoit une promesse si elle est resolu , sur  ce resultat  then envoie au front-end la reponse à la requête Post sur l 'endpoint de l 'API("/signup") avec un statut 201 pour la création du compte reussi avec un message en ojjet
-        .catch( error => res.status( 400 ).json( { error: error._message } ) );// catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
+        .catch( error => {
+          console.log(error)
+          res.status( 400 ).json( { error: error._message } )
+         });// catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
       } )
-  .catch( error => res.status( 500 ).json( { error } ) );// nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
+  .catch( error => res.status( 500 ).json( { error } ) );
+  // nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
+  /*function validationEmail(email){
+    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+    try{
+        if(regexEmail.test(email)) return true
+    }catch{
+      console.log( "erreur email")
+      return res.status(400).json({ mesaage: "erreur email"})
+       
+      
+    }
+  
+  }*/
 };
+
+
+
 
 // fonction controller pour la connexion et la verification des identifiant de connexion
 

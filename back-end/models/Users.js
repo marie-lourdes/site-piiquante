@@ -5,13 +5,16 @@ const mongoose = require( "mongoose" );
 const uniqueValidator = require( "mongoose-unique-validator" );
 
 //.......................................CRÉATION DE LA COLLECTION USERS............................................
+const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
 // création du userShema 
 const userShema = mongoose.Schema( {
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    email: { type: String, required: true, match: regexEmail , unique: true },
+    password: { type: String, required: true}
 } );
 
+
+ 
 // prévalidation de l'email  crée en tant qu'adresse email unique avec le mot clé unique et plugin unique-validator: pour ne pas  l enregistrer plusieurs fois pour des utilisateurs différents 
 userShema.plugin( uniqueValidator );
 
