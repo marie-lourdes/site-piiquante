@@ -19,6 +19,7 @@ const logger = require( "../log/logger" );
 
 // fonction controller pour l'inscription d un utilisateur
  exports.signUp = ( req, res ) => {
+  // validation des entrées password avant de crypter le mot de passe
   const regexPswrd = /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$/
   const validationPsword = regexPswrd.test(req.body.password )
       if( !validationPsword ) return res.status(400).json(

@@ -9,7 +9,7 @@ const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
 // création du userShema 
 const userShema = mongoose.Schema( {
-    email: { type: String, required: true, match: regexEmail , unique: true },
+    email: { type: String, required: true, match: regexEmail , unique: true },// validation de l email  avec l'objet error mongoose qui teste l unicité de l email et le regexEmail avec le validator match
     password: { type: String, required: true}
 } );
 
