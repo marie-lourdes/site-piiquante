@@ -32,14 +32,14 @@ The server should run on localhost with default port 4200.
 <br>
 -From the "back-end" folder of the project, run "npm install".
 <br>
--Complete the file .env in the back-end folder with values, according to example, without simple quote or double quote:
+-Complete the environment variables of the file .env in the back-end folder with values, according to example, without simple quote or double quote:
 <br><br>
 
 *PORT= the default port defined of server back end with required value :3000*
 <br>
 *URI_DB= URI connection  of your database ( database MongoDB Atlas is required ) with your password provided by your dataBase service*
 <br>
-*TOKEN_REQUEST= value with specials characters, string and number, very long as possible  for token authentification request* 
+*TOKEN_REQUEST= value with specials characters, string and number, very long as possible  for encryption/decryption token authentification request* 
 <br>
 *CLIENT_REQUEST= address referrer with required value: http://localhost:4200/*
 <br><br>
