@@ -32,7 +32,7 @@ The server should run on localhost with default port 4200.
 <br>
 -From the "back-end" folder of the project, run "npm install".
 <br>
--Complete the environment variables of the file starting with .env in the back-end folder with values, according to example, without simple quote or double quote:
+-Complete the environment variables of the file .env.example  with values, according to example, without simple quote or double quote:
 <br><br>
 
 *PORT= the default port defined of server back end with required value :3000*
@@ -43,8 +43,11 @@ The server should run on localhost with default port 4200.
 <br>
 *CLIENT_REQUEST= address referrer with required value: http://localhost:4200/*
 <br><br>
-
--Register the file .env
+-create a file .env
+<br>
+-Copy and paste the content of the example completed in the file .env 
+<br>
+- register the file and delete the file .env.example
 <br>
 -You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
 <br>
