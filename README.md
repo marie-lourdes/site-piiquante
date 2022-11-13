@@ -13,7 +13,7 @@ The site "HOT TAKES" (of Piiquante enterprise) is a hot sauces evaluation applic
 This is the front end and back end server for Project 6 of the Web Developer path.
 <br>
 **Back end and Front end Prerequisites:** You will need to have Node and npm installed locally on your machine.
-Clone this repo.
+Clone this repo: https://github.com/marie-lourdes/site-piiquante.git
 
 ### FRONT-END
 
