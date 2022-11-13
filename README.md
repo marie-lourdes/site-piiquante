@@ -2,18 +2,13 @@
 
 The site "HOT TAKES is a hot sauces evaluation application that allows users:
 <br>
-- **to register as a user**
-<br>
-- **to log as a user**
- <br>
-- **to download their sauces**
-<br>
-- **to modify or delete their sauces**
-<br>
+- **to register as a user**<br>
+- **to log as a user**<br>
+- **to download their sauces**<br>
+- **to modify or delete their sauces**<br>
 - **and to like or dislike the sauces of other users.**
 
 ## INSTALLATION
-
 This is the front end and back end server for Project 6 of the Web Developer path.
 <br>
 **Back end and Front end Prerequisites:** You will need to have Node and npm installed locally on your machine.
@@ -29,7 +24,6 @@ Clone this repo.
 The server should run on localhost with default port 4200.
 
 ### BACK-END
-
 -Open other terminal in the same folder repo and run "cd back-end", now you should have two terminals opened in the folder project
 <br>
 -From the "back-end" folder of the project, run "npm install".
@@ -54,5 +48,4 @@ The server should run on localhost with default port 4200.
 -You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
 <br>
 The server should run on localhost with default port 3000.
-
 
