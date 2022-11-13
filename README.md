@@ -25,6 +25,15 @@ The server should run on localhost with default port 4200.
 
 ### BACK-END
 From the "back-end" folder of the project, run npm install.
+Complete the file .env with values according to example:
+PORT= the default port defined of server back end with required value :3000
+URI_DB= path of your database ( database MongoDB Atlas is required) and password 
+TOKEN_REQUEST= string and number as possible  very long to crypt and decrypt TOKEN for authentification request 
+CLIENT_REQUEST= address referer with required value: http://localhost:4200/
+
+
+
+
 
 
 You can then run the server back end with node server. The server should run on localhost with default port 3000.
