@@ -32,7 +32,7 @@ The server should run on localhost with default port 4200.
 <br>
 -From the "back-end" folder of the project, run "npm install".
 <br>
--Complete the environment variables of the file .env in the back-end folder with values, according to example, without simple quote or double quote:
+-Complete the environment variables of the file starting with .env in the back-end folder with values, according to example, without simple quote or double quote:
 <br><br>
 
 *PORT= the default port defined of server back end with required value :3000*
