@@ -21,13 +21,15 @@ Clone this repo.
 ### FRONT-END
 -Open the folder of the repo, add a terminal and run "cd front-end"
 <br>
--From the "front-end" folder of the project, run "npm install".<br>
+-From the "front-end" folder of the project, run "npm install".
+<br>
 -You can then run the server front end with "npm run start" from the "front-end" folder of the project
 <br>
 The server should run on localhost with default port 4200.
 
 ### BACK-END
 -Open other terminal in the same folder repo and run "cd back-end", now you should have two terminals opened in the folder project
+<br>
 -From the "back-end" folder of the project, run "npm install".
 <br>
 -Complete the file .env in the back-end folder with values, according to example, without simple quote or double quote:
