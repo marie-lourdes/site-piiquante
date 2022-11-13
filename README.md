@@ -27,11 +27,12 @@ Clone this repo.
 The server should run on localhost with default port 4200.
 
 ### BACK-END
--Open other terminal in the same folder repo and run "cd back-end", now you have two terminals opened in the folder project
+-Open other terminal in the same folder repo and run "cd back-end", now you should have two terminals opened in the folder project
 -From the "back-end" folder of the project, run "npm install".
 <br>
 -Complete the file .env in the back-end folder with values, according to example, without simple quote or double quote:
-<br>
+<br><br>
+
 *PORT= the default port defined of server back end with required value :3000*
 <br>
 *URI_DB= URI connection  of your database ( database MongoDB Atlas is required ) with your password provided by your dataBase service*
@@ -39,7 +40,8 @@ The server should run on localhost with default port 4200.
 *TOKEN_REQUEST= value with specials characters, string and number, very long as possible  for token authentification request* 
 <br>
 *CLIENT_REQUEST= address referer with required value: http://localhost:4200/*
-<br>
+<br><br>
+
 -Register the file .env
 <br>
 -You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
