@@ -2,15 +2,11 @@
 
 The site "HOT TAKES is a hot sauces evaluation application that allows users:
 <br>
--**to register as a user**
-<br>
--**to log as a user**
- <br>
--**to download their sauces**
-<br>
--**to modify or delete their sauces**
-<br>
--**and to like or dislike the sauces of other users.**
+- **to register as a user**<br>
+- **to log as a user**<br>
+- **to download their sauces**<br>
+- **to modify or delete their sauces**<br>
+- **and to like or dislike the sauces of other users.**
 
 ## INSTALLATION
 This is the front end and back end server for Project 6 of the Web Developer path.
@@ -47,7 +43,7 @@ The server should run on localhost with default port 4200.
 <br>
 -Copy and paste the content of the example completed in the file .env 
 <br>
-- register the file and delete the file .env.example
+-Register the file and delete the file .env.example
 <br>
 -You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
 <br>
