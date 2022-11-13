@@ -42,6 +42,7 @@ The server should run on localhost with default port 4200.
 <br>
 *CLIENT_REQUEST= address referrer with required value: http://localhost:4200/*
 <br><br>
+
 -Create a file .env
 <br>
 -Copy and paste the content of the example completed in the file .env 
@@ -51,4 +52,6 @@ The server should run on localhost with default port 4200.
 -You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
 <br>
 The server should run on localhost with default port 3000.
+
+
 
