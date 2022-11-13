@@ -1,5 +1,5 @@
 # HOT TAKES
-The background color should be `#ffffff` for light mode and `#0d1117` for dark mode.
+
 The site "HOT TAKES is a hot sauces evaluation application that allows users:
 <br>
 -**to register as a user**
@@ -12,15 +12,19 @@ The site "HOT TAKES is a hot sauces evaluation application that allows users:
 <br>
 -**and to like or dislike the sauces of other users.**
 
-
-
-`#000000`
+## INSTALLATION
 This is the front end and back end server for Project 6 of the Web Developer path.
+Back end and Front end Prerequisites: You will need to have Node and npm installed locally on your machine.
+Clone this repo.
 
-Back end and Front end Prerequisites You will need to have Node and npm installed locally on your machine.
+### FRONT-END
 
-Front end and back end Installation: Clone this repo. 
+From the "front-end" folder of the project, run npm install.<br>
+You can then run the server front end with npm run start From the "front-end" folder of the project <br>
+The server should run on localhost with default port 4200.
 
-From the "front-end" folder of the project, run npm install. You can then run the server front end with npm run start From the "front-end" folder of the project The server should run on localhost with default port 4200.
+### BACK-END
+From the "back-end" folder of the project, run npm install.
 
-From the "back-end" folder of the project, run npm install. You can then run the server back end with node server. The server should run on localhost with default port 3000.
+
+You can then run the server back end with node server. The server should run on localhost with default port 3000.
