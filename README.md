@@ -1,5 +1,5 @@
 # HOT TAKES
-
+The background color should be `#ffffff` for light mode and `#0d1117` for dark mode.
 The site "HOT TAKES is a hot sauces evaluation application that allows users:
 <br>
 -**to register as a user**
@@ -8,9 +8,9 @@ The site "HOT TAKES is a hot sauces evaluation application that allows users:
  <br>
 -**to download their sauces**
 <br>
--**modify or delete their sauces**
+-**to modify or delete their sauces**
 <br>
--**and like or dislike the sauces of other users.**
+-**and to like or dislike the sauces of other users.**
 
 
 
