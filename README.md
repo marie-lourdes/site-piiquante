@@ -1,4 +1,11 @@
-# HOT-TAKES
+# HOT TAKES
+
+The site "HOT TAKES is a hot sauces evaluation application that allows users:
+-to register as a user
+-to log as a user
+-to download their sauces, 
+-modify or delete their sauces 
+-and like or dislike the sauces of other users.
 
 This is the front end and back end server for Project 6 of the Web Developer path.
 
