@@ -14,6 +14,7 @@ The site "HOT TAKES is a hot sauces evaluation application that allows users:
 
 ## INSTALLATION
 This is the front end and back end server for Project 6 of the Web Developer path.
+<br>
 **Back end and Front end Prerequisites:** You will need to have Node and npm installed locally on your machine.
 Clone this repo.
 
