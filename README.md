@@ -19,29 +19,35 @@ This is the front end and back end server for Project 6 of the Web Developer pat
 Clone this repo.
 
 ### FRONT-END
-Open the folder of the repo with the terminal and run "cd front-end"
-
-From the "front-end" folder of the project, run "npm install".<br>
-You can then run the server front end with npm run start From the "front-end" folder of the project <br>
+-Open the folder of the repo, add a terminal and run "cd front-end"
+<br>
+-From the "front-end" folder of the project, run "npm install".<br>
+-You can then run the server front end with "npm run start" from the "front-end" folder of the project
+<br>
 The server should run on localhost with default port 4200.
 
 ### BACK-END
-Open other terminal  and run "cd back-end"
-From the "back-end" folder of the project, run "npm install".
+-Open other terminal in the same folder repo and run "cd back-end", now you have two terminals opened in the folder project
+-From the "back-end" folder of the project, run "npm install".
 <br>
-Complete the file .env in the back-end folder with values according to example without simple quote or double quote:
-PORT= the default port defined of server back end with required value :3000
-URI_DB= URI connection  of your database ( database MongoDB Atlas is required) with your password provided by your dataBase service
-TOKEN_REQUEST= string and number as possible  very long to crypt and decrypt TOKEN for authentification request 
-CLIENT_REQUEST= address referer with required value: http://localhost:4200/
-Register the file .env
+-Complete the file .env in the back-end folder with values, according to example, without simple quote or double quote:
 <br>
-You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
+*PORT= the default port defined of server back end with required value :3000*
+<br>
+*URI_DB= URI connection  of your database ( database MongoDB Atlas is required ) with your password provided by your dataBase service*
+<br>
+*TOKEN_REQUEST= value with specials characters, string and number, very long as possible  for token authentification request* 
+<br>
+*CLIENT_REQUEST= address referer with required value: http://localhost:4200/*
+<br>
+-Register the file .env
+<br>
+-You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
+<br>
+The server should run on localhost with default port 3000.
 
 
 
 
 
 
-
-You can then run the server back end with node server. The server should run on localhost with default port 3000.
