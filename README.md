@@ -39,7 +39,7 @@ The server should run on localhost with default port 4200.
 <br>
 *TOKEN_REQUEST= value with specials characters, string and number, very long as possible  for token authentification request* 
 <br>
-*CLIENT_REQUEST= address referer with required value: http://localhost:4200/*
+*CLIENT_REQUEST= address referrer with required value: http://localhost:4200/*
 <br><br>
 
 -Register the file .env
