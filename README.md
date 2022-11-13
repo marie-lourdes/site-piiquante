@@ -2,15 +2,15 @@
 
 The site "HOT TAKES is a hot sauces evaluation application that allows users:
 <br>
-`#DF3729`-to register as a user
+-**to register as a user**
 <br>
--to log as a user
+-**to log as a user**
  <br>
--to download their sauces
+-**to download their sauces**
 <br>
--modify or delete their sauces 
+-**modify or delete their sauces**
 <br>
--and like or dislike the sauces of other users.
+-**and like or dislike the sauces of other users.**
 
 
 
