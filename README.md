@@ -39,7 +39,7 @@ The server should run on localhost with default port 4200.
 <br>
 *CLIENT_REQUEST= address referrer with required value: http://localhost:4200/*
 <br><br>
--create a file .env
+-Create a file .env
 <br>
 -Copy and paste the content of the example completed in the file .env 
 <br>
