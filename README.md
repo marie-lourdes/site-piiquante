@@ -13,8 +13,7 @@ The site "HOT TAKES" (of Piiquante enterprise) is a hot sauces evaluation applic
 This is the front end and back end server for Project 6 of the Web Developer path.
 <br>
 **Back end and Front end Prerequisites:** You will need to have Node and npm installed locally on your machine.
-<br>
-Clone this repo: https://github.com/marie-lourdes/site-piiquante.git
+Clone this repo.
 
 ### FRONT-END
 
@@ -37,7 +36,7 @@ The server should run on localhost with default port 4200.
 
 *PORT= the default port defined of server back end with required value :3000*
 <br>
-*URI_DB= URI connection  of your database ( database MongoDB Atlas is required ) with your password provided by your dataBase service*
+*URI_DB= URI connection  of your database ( database MongoDB Atlas is required ) with username and your password provided by your dataBase service*
 <br>
 *TOKEN_REQUEST= value with specials characters, string and number, very long as possible  for encryption/decryption token authentification request* 
 <br>
@@ -53,6 +52,8 @@ The server should run on localhost with default port 4200.
 -You can then run the server back end  with "nodemon server" or "npm run server" from the "back-end" folder of the project 
 <br>
 The server should run on localhost with default port 3000.
+
+Readme.md on the site https://marie-lourdes.github.io/site-piiquante/
 
 
 
