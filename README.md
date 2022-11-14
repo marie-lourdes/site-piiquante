@@ -36,7 +36,7 @@ The server should run on localhost with default port 4200.
 
 *PORT= the default port defined of server back end with required value :3000*
 <br>
-*URI_DB= URI connection  of your database ( database MongoDB Atlas is required ) with your password provided by your dataBase service*
+*URI_DB= URI connection  of your database ( database MongoDB Atlas is required ) with username and your password provided by your dataBase service*
 <br>
 *TOKEN_REQUEST= value with specials characters, string and number, very long as possible  for encryption/decryption token authentification request* 
 <br>

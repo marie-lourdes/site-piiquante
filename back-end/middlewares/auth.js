@@ -7,7 +7,7 @@ const logger = require( "../log/logger" );
 dotenv.config();
 const TOKEN_ALGORITHM = process.env.TOKEN_REQUEST;
 const CLIENT = process.env.CLIENT_REQUEST;
-console.log(process.env)
+
 // On exporte le module d'authentification de la requête pour verifier le token lors d une opérations CRUD sur les endpoint des ressources sauces
 module.exports = (req, res, next) => {  
     // verification de la page precedente qui a mené l utilisateur à la page courante (avec la requête du lien de la page précedente (page de connexion) ), page provenant du site avant de decoder le token si ce n est pas le cas on arrte la fonction d'authentification et les middlewares suivant qui traitent les requêtes sur chaque routes.
