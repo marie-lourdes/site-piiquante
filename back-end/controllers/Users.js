@@ -44,26 +44,12 @@ const logger = require( "../log/logger" );
         .catch( error => {
           console.log(error)
           res.status( 400 ).json( { error: error._message } )
-         });// catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
+        } );
+        // catch() récupère les erreurs généres par la méthode save(): l'enregistrement du model et indique une erreur de requête avec le code http 400  
       } )
   .catch( error => res.status( 500 ).json( { error } ) );
-  // nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe
-  /*function validationEmail(email){
-    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-    try{
-        if(regexEmail.test(email)) return true
-    }catch{
-      console.log( "erreur email")
-      return res.status(400).json({ mesaage: "erreur email"})
-       
-      
-    }
-  
-  }*/
+  // nous indiquons une erreur serveur avec le code http 500 car c'est une erreur qui peut être généré par le cryptage de l 'api du mot de passe         
 };
-
-
-
 
 // fonction controller pour la connexion et la verification des identifiant de connexion
 
@@ -105,7 +91,7 @@ exports.login = ( req, res ) => {
         } )
         .catch( error => res.status( 500 ).json( { error } ) );
         // catch recupère l erreur generé par la verification du package bcrypt et envoit le code 500 erreur cote serveur lors de la verification du mot de passe
-    })
+    } )
     .catch( error => res.status( 500 ).json( { error } ) );
   // catch recupere l erreur généré dans le premier bloc then qui traite le resultat de la promesse de la methode findOne()  quand le serveur(plus précisement l'api qui gere les requetes serveur) ne trouvera pas l'utilisateur dans la base de données 
 };
